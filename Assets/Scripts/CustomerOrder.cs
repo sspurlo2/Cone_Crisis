@@ -12,7 +12,8 @@ public class CustomerOrder : MonoBehaviour {
 
 
     private void Start() {
-        receiptCube.SetActive(false); //hide receipt at start
+        //receiptCube.SetActive(false); //hide receipt at start
+        receiptText.text = "waiting for order...";
     }
 
     private void OnTriggerEnter(Collider other){
