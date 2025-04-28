@@ -8,17 +8,26 @@ public class CustomerOrder : MonoBehaviour {
     public GameObject receiptCube; //receipt cube in unity
     public TextMeshPro receiptText; 
     public List<string> flavorOrder = new List<string>();
+    public CustomerMovement currentCustomer; // store customer who ordered
+
 
     private void Start() {
         receiptCube.SetActive(false); //hide receipt at start
     }
 
     private void OnTriggerEnter(Collider other){
-        if (other.CompareTag("Player")){
+        if (other.CompareTag("Customer")){
             receiptCube.SetActive(true); //show receipt when player steps on trigger
             GenerateOrder();
             DisplayOrder();
-        }
+
+            currentCustomer = other.GetComponent<CustomerMovement>();
+
+            /*CustomerMovement moveScript = other.GetComponent<CustomerMovement>();
+            if (moveScript != null) {
+                moveScript.StartLeaving();
+            } */
+        } 
     }
 
     void GenerateOrder() {
