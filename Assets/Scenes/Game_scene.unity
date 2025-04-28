@@ -2483,8 +2483,8 @@ Transform:
   m_GameObject: {fileID: 735063668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.403, y: 0.313, z: 6.393}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 5.23, y: 0.18, z: 5.379}
+  m_LocalScale: {x: 12, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5095,7 +5095,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 8e93c0df744457d4e887e3fce46163ff, type: 2}
     - target: {fileID: 919132149155446097, guid: 089852a97ecf8a943b3fa3cabf21ced0, type: 3}
       propertyPath: m_Name
-      value: Lemon
+      value: Mango
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5538,6 +5538,7 @@ GameObject:
   - component: {fileID: 1473945562}
   - component: {fileID: 1473945561}
   - component: {fileID: 1473945560}
+  - component: {fileID: 1473945564}
   m_Layer: 0
   m_Name: Receipt
   m_TagString: Untagged
@@ -5635,6 +5636,22 @@ Transform:
   - {fileID: 341330015}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1473945564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1473945559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d681566c6dcb7412490d930c3a7234a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receiptCube: {fileID: 1473945559}
+  receiptText: {fileID: 341330016}
+  flavorOrder: []
+  currentCustomer: {fileID: 0}
 --- !u!1001 &1490640263
 PrefabInstance:
   m_ObjectHideFlags: 0

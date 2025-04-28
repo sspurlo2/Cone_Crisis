@@ -17,12 +17,18 @@ public class CustomerOrder : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other){
-        if (other.CompareTag("Customer")){
-            receiptCube.SetActive(true); //show receipt when player steps on trigger
+        if (other.CompareTag("Customer")) {
+            //receiptCube.SetActive(true); //show receipt when player steps on trigger
+            /*GenerateOrder();
+            DisplayOrder(); */
+
+            Debug.Log("Customer entered trigger");
+            receiptCube.SetActive(true);
             GenerateOrder();
             DisplayOrder();
 
             currentCustomer = other.GetComponent<CustomerMovement>();
+
 
             /*CustomerMovement moveScript = other.GetComponent<CustomerMovement>();
             if (moveScript != null) {
@@ -33,7 +39,7 @@ public class CustomerOrder : MonoBehaviour {
 
     void GenerateOrder() {
         flavorOrder.Clear();
-        string[] flavors = { "Strawberry", "Vanilla", "Chocolate"}; //flavor options
+        string[] flavors = { "Strawberry", "Vanilla", "Chocolate", "Blueberry", "Mango"}; //flavor options
         string randomFlavor = flavors[Random.Range(0, flavors.Length)]; //only one flavor for tutorial
         flavorOrder.Add(randomFlavor);
     }
