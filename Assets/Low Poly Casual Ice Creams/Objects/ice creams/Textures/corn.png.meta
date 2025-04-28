@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 039a14f0e162dbe4d9cea7a2042a938c
+guid: 49bd16afc56ef834bb43d0279e34a6bc
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -130,5 +130,5 @@ AssetOrigin:
   productId: 294701
   packageName: Low Poly Casual Ice Creams
   packageVersion: 1.0
-  assetPath: Assets/Materials/Textures/corn.png
+  assetPath: Assets/Low Poly Casual Ice Creams/Objects/ice creams/Textures/corn.png
   uploadId: 698972
