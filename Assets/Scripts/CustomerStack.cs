@@ -11,12 +11,18 @@ public class PlayerStack : MonoBehaviour {
 
     public void TrySubmitOrder() //check player stack against customer order
     {
-        if (currentOrder.CheckOrder(playerFlavors)){
+        if (currentOrder.CheckOrder(playerFlavors)) {
             Debug.Log("Correct Order!"); //order matches
             playerFlavors.Clear();
-            currentOrder.gameObject.SetActive(false); //hide receipt
-        } else {
-            Debug.Log("Incorrect order. Try again."); // order does not match
+
+            if (currentOrder.currentCustomer != null) {
+                currentOrder.currentCustomer.StartLeaving();
+            }
+
+            currentOrder.receiptCube.SetActive(false);
+        }
+        else {
+            Debug.Log("Incorrect order. Try again.");
         }
     }
 }
