@@ -9,6 +9,7 @@ public class Scooper : MonoBehaviour
     public GameObject strawberryConePrefab;
     public GameObject mangoConePrefab;
     public GameObject blueberryConePrefab;
+    private bool scooped = false; // Flag to check if already scooped
     // Add more prefabs as needed
 
     public float maxDistance = 3f; // How close you need to be
@@ -23,8 +24,10 @@ public class Scooper : MonoBehaviour
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
-
-                SpawnCone(hit.collider.gameObject);
+                if(scooped == false) // Check if already scooped
+                {
+                    SpawnCone(hit.collider.gameObject);
+                }
             }
         }
     }
@@ -55,6 +58,12 @@ public class Scooper : MonoBehaviour
                                   + transform.forward * 0.40f; 
 
             Instantiate(coneToSpawn, spawnPosition, transform.rotation, transform.parent);
+            scooped = true; // Set scooped to true to prevent further scooping
         }
     }
+    public void ResetScooped()
+    {
+        scooped = false;
+    }
+
 }

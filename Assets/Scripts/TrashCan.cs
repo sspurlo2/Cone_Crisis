@@ -5,33 +5,53 @@ public class TrashCan : MonoBehaviour
     public Camera cam;
     public LayerMask trashCanLayer;
     public float maxDistance = 3f;
+    public Scooper scooper; // Make sure this is assigned in Inspector
 
     void Update()
+{
+    if (Input.GetMouseButtonDown(0))
     {
-        if (Input.GetMouseButtonDown(0))
+        // Check if camera is assigned
+        if (cam == null)
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Debug.LogError("Camera not assigned in TrashCan!");
+            return;
+        }
 
-            if (Physics.Raycast(ray, out hit, maxDistance, trashCanLayer))
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, trashCanLayer))
+        {
+            ThrowAwayLeftHand();
+            
+            // Check if scooper is assigned before resetting
+            if (scooper != null) 
             {
-                Debug.Log("Clicked on Trash Can");
-
-                ThrowAwayLeftHand();
+                scooper.ResetScooped();
+                Debug.Log("Scooping reset successfully");
+            }
+            else
+            {
+                Debug.LogError("Scooper reference not set in TrashCan!");
             }
         }
     }
+}
 
-void ThrowAwayLeftHand()
+    void ThrowAwayLeftHand()
 {
-    Transform playerCam = GameObject.Find("PlayerCam").transform; // Find your PlayerCam
+    GameObject playerCamObj = GameObject.Find("PlayerCam");
+    if (playerCamObj == null)
+    {
+        Debug.LogError("PlayerCam not found in scene!");
+        return;
+    }
 
-    foreach (Transform child in playerCam)
+    foreach (Transform child in playerCamObj.transform)
     {
         if (child.CompareTag("Cone"))
         {
             Destroy(child.gameObject);
-            break; // only destroy the first cone hand found
+            break;
         }
     }
 }
