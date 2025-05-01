@@ -7750,12 +7750,13 @@ MonoBehaviour:
   iceCreamLayer:
     serializedVersion: 2
     m_Bits: 512
+  exitPoint: {fileID: 0}
   vanillaConePrefab: {fileID: 1310888628}
   chocolateConePrefab: {fileID: 1945580267}
   strawberryConePrefab: {fileID: 1771808940}
   mangoConePrefab: {fileID: 95363777}
   blueberryConePrefab: {fileID: 837384896}
-  maxDistance: 3
+  maxDistance: 5
 --- !u!1 &1728038691 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -516098083770646512, guid: 089852a97ecf8a943b3fa3cabf21ced0, type: 3}
@@ -9523,6 +9524,26 @@ PrefabInstance:
     - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
       propertyPath: m_LocalPosition.z
       value: 2.626
+      objectReference: {fileID: 0}
+    - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4058939467222930749, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4845389839659541590, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
       propertyPath: m_LocalPosition.x

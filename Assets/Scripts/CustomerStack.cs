@@ -16,7 +16,7 @@ public class PlayerStack : MonoBehaviour {
             playerFlavors.Clear();
 
             if (currentOrder.currentCustomer != null) {
-                currentOrder.currentCustomer.StartLeaving();
+                currentOrder.currentCustomer.MoveToRegister();
             }
 
             currentOrder.receiptCube.SetActive(false);

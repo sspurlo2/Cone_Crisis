@@ -22,34 +22,64 @@ public class CustomerMovement : MonoBehaviour
             if (registerPoint == null)
                 Debug.LogError("Missing CustomerRegister in scene!");
         }
-    }
-    private void Update() {
-        if (targetPoint != null && !hasOrdered) {
-            MoveTowardsTarget(targetPoint); 
+        if (exitPoint == null)
+        {
+            exitPoint = GameObject.Find("CustomerExit")?.transform;
         }
-        else if(hasOrdered) {
-            MoveTowardsTarget(registerPoint); //move to exit point
-        }
-        else if (hasPayed) {
-            MoveTowardsTarget(exitPoint); //move to exit point
-            if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f) {
-                    Destroy(gameObject); //customer dissappears
-                }
-        }
-    }
 
-    private void MoveTowardsTarget(Transform destination) {
+    }
+private void Update() {
+    if (hasPayed) {
+        Debug.Log("Leaving the store!");
+        MoveTowardsTarget(exitPoint);
+        if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f) {
+            Destroy(gameObject); // customer leaves
+        }
+    }
+    else if (hasOrdered) {
+        MoveTowardsTarget(registerPoint);
+    }
+    else if (targetPoint != null) {
+        MoveTowardsTarget(targetPoint);
+    }
+}
+
+
+    public void MoveTowardsTarget(Transform destination) {
         transform.position = Vector3.MoveTowards(transform.position, destination.position, moveSpeed * Time.deltaTime);
-        Vector3 direction = (destination.position - transform.position).normalized;
-            if (direction != Vector3.zero) {
-                transform.forward = direction; // face server
+
+        Vector3 direction;
+
+        if (destination == registerPoint)
+        {
+            // Always face the player when at register
+            GameObject playerCam = GameObject.Find("PlayerCam");
+            if (playerCam != null)
+            {
+                direction = (playerCam.transform.position - transform.position).normalized;
+            }
+            else
+            {
+                direction = (destination.position - transform.position).normalized;
             }
         }
+        else
+        {
+            direction = (destination.position - transform.position).normalized;
+        }
 
-    public void StartLeaving() {
+        if (direction != Vector3.zero)
+        {
+            transform.forward = direction;
+        }
+    }
+
+
+    public void MoveToRegister() {
         hasOrdered = true;
     }
     public void Pay() {
+        
         hasPayed = true;
     }
 }

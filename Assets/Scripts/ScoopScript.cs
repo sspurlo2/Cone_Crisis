@@ -4,6 +4,8 @@ public class Scooper : MonoBehaviour
 {
     public Camera cam; // Your main camera
     public LayerMask iceCreamLayer; // Layer only for ice cream tubs
+    public Transform exitPoint;
+
     public GameObject vanillaConePrefab;
     public GameObject chocolateConePrefab;
     public GameObject strawberryConePrefab;
@@ -16,6 +18,8 @@ public class Scooper : MonoBehaviour
 
     void Update()
     {
+        
+
         if (Input.GetMouseButtonDown(0)) // Left click
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -33,10 +37,15 @@ public class Scooper : MonoBehaviour
             {
                 Debug.Log("Clicked on customer " + hit.collider.name);
                 CustomerMovement customer = hit.collider.GetComponent<CustomerMovement>();
+                if(!scooped) // Check if already scooped
+                {
+                    RingUp(customer.gameObject);
+                }
                 if (customer != null)
                 {
                     GiveCone(customer.gameObject);
                 }
+                
             }
             else
             {
@@ -84,8 +93,8 @@ public class Scooper : MonoBehaviour
             
             if (scooped == true)
             {
+                customer.MoveToRegister(); // Call the method to make the customer leave
                 Debug.Log("Gave cone to customer!");
-                customer.StartLeaving();
                 GameObject playerCamObj = GameObject.Find("PlayerCam");
                 if (playerCamObj == null)
                 {
@@ -98,11 +107,28 @@ public class Scooper : MonoBehaviour
                     if (child.CompareTag("Cone"))
                     {
                         Destroy(child.gameObject);
+                        ResetScooped(); // Reset scooped to allow for new scooping
                         break;
                     }
                 }
             }
         }
+    
+    public void RingUp(GameObject customerObj){
+        CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
+        if (customer != null)
+        {
+            customer.Pay();
+            // Sam add a command here to add the money to our total
+            // samalama bim bam, bam, sam thank you ma'am, big lamb bam. if sam was a lamb, she would be a big lamb.
+            Debug.Log("Customer has paid!");
+        }
+        else
+        {
+            Debug.LogError("CustomerMovement component not found on the object!");
+        }
+
+    }
             
 
     public void ResetScooped()
