@@ -29,6 +29,21 @@ public class Scooper : MonoBehaviour
                     SpawnCone(hit.collider.gameObject);
                 }
             }
+            if (Physics.Raycast(ray, out hit, maxDistance, CustomerMovement.customerLayer))
+            {
+                Debug.Log("Clicked on customer " + hit.collider.name);
+                CustomerMovement customer = hit.collider.GetComponent<CustomerMovement>();
+                if (customer != null)
+                {
+                    GiveCone(customer.gameObject);
+                }
+            }
+            else
+            {
+                Debug.Log("Clicked on something else");
+
+            }
+
         }
     }
 
@@ -61,9 +76,39 @@ public class Scooper : MonoBehaviour
             scooped = true; // Set scooped to true to prevent further scooping
         }
     }
+
+    public void GiveCone(GameObject customerObj)
+        {
+            CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
+            
+            
+            if (scooped == true)
+            {
+                Debug.Log("Gave cone to customer!");
+                customer.StartLeaving();
+                GameObject playerCamObj = GameObject.Find("PlayerCam");
+                if (playerCamObj == null)
+                {
+                    Debug.LogError("PlayerCam not found in scene!");
+                    return;
+                }
+
+                foreach (Transform child in playerCamObj.transform)
+                {
+                    if (child.CompareTag("Cone"))
+                    {
+                        Destroy(child.gameObject);
+                        break;
+                    }
+                }
+            }
+        }
+            
+
     public void ResetScooped()
     {
         scooped = false;
     }
+
 
 }

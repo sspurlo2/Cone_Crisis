@@ -56,7 +56,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: animal_people_wolf_1_SimpleMovement
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7035545159852969873, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -72,6 +73,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8249930827179827100}
+    - targetCorrespondingSourceObject: {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -9180319722423008495}
   m_SourcePrefab: {fileID: 100100000, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
 --- !u!1 &3115044124669147887 stripped
 GameObject:
@@ -160,6 +164,22 @@ MonoBehaviour:
   m_animator: {fileID: 7425665027789693402}
   m_rigidBody: {fileID: 6287757212439907335}
   m_controlMode: 1
+--- !u!114 &-9180319722423008495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3115044124669147887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f466278d28d384109a5aa27bb091fece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPoint: {fileID: 0}
+  registerPoint: {fileID: 0}
+  exitPoint: {fileID: 0}
+  moveSpeed: 2
 --- !u!95 &7425665027789693402 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1595969889546942702, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
