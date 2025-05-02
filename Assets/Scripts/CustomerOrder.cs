@@ -16,25 +16,14 @@ public class CustomerOrder : MonoBehaviour {
         receiptText.text = "waiting for order...";
     }
 
-    private void OnTriggerEnter(Collider other){
+    private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Customer")) {
-            //receiptCube.SetActive(true); //show receipt when player steps on trigger
-            /*GenerateOrder();
-            DisplayOrder(); */
-
             Debug.Log("Customer entered trigger");
             receiptCube.SetActive(true);
             GenerateOrder();
             DisplayOrder();
-
             currentCustomer = other.GetComponent<CustomerMovement>();
-
-
-            /*CustomerMovement moveScript = other.GetComponent<CustomerMovement>();
-            if (moveScript != null) {
-                moveScript.StartLeaving();
-            } */
-        } 
+        }
     }
 
     void GenerateOrder() {

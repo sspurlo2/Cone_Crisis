@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CustomerMovement : MonoBehaviour
 {
@@ -82,4 +83,19 @@ private void Update() {
         
         hasPayed = true;
     }
+
+  public void MoveToFront(Vector3 position) {
+        StartCoroutine(MoveUpAfterDelay(position));
+    }
+
+    private IEnumerator MoveUpAfterDelay(Vector3 position) {
+        yield return new WaitForSeconds(3f);
+        GameObject tempTarget = new GameObject("TempFrontTarget");
+        tempTarget.transform.position = position;
+        targetPoint = tempTarget.transform;
+        hasOrdered = false;
+        hasPayed = false;
+        Destroy(tempTarget, 15f);
+    }
 }
+
