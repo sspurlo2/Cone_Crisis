@@ -38,21 +38,21 @@ public class TrashCan : MonoBehaviour
 }
 
     void ThrowAwayLeftHand()
-{
-    GameObject playerCamObj = GameObject.Find("PlayerCam");
-    if (playerCamObj == null)
     {
-        Debug.LogError("PlayerCam not found in scene!");
-        return;
-    }
-
-    foreach (Transform child in playerCamObj.transform)
-    {
-        if (child.CompareTag("Cone"))
+        GameObject playerCamObj = GameObject.Find("PlayerCam");
+        if (playerCamObj == null)
         {
-            Destroy(child.gameObject);
-            break;
+            Debug.LogError("PlayerCam not found in scene!");
+            return;
+        }
+
+        foreach (Transform child in playerCamObj.transform)
+        {
+            if (child.CompareTag("Cone"))
+            {
+                Destroy(child.gameObject);
+                break;
+            }
         }
     }
-}
 }

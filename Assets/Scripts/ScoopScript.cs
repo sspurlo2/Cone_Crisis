@@ -4,14 +4,17 @@ public class Scooper : MonoBehaviour
 {
     public Camera cam; // Your main camera
     public LayerMask iceCreamLayer; // Layer only for ice cream tubs
-    public Transform exitPoint;
-
-    public GameObject vanillaConePrefab;
-    public GameObject chocolateConePrefab;
-    public GameObject strawberryConePrefab;
-    public GameObject mangoConePrefab;
-    public GameObject blueberryConePrefab;
+    public LayerMask coneLayer; // Layer only for cones
+    public GameObject cone; // Prefab for the cone to spawn
     private bool scooped = false; // Flag to check if already scooped
+    public bool conePickedUp = false; // Flag to check if cone is picked up
+    public Material blueberryMat;
+    public Material chocolateMat;
+    public Material mangoMat;
+    public Material strawberryMat;
+    public Material vanillaMat;
+
+
     // Add more prefabs as needed
 
     public float maxDistance = 3f; // How close you need to be
@@ -28,9 +31,17 @@ public class Scooper : MonoBehaviour
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
-                if(scooped == false) // Check if already scooped
+                if(scooped == false && conePickedUp == true) // Check if already scooped
                 {
                     SpawnCone(hit.collider.gameObject);
+                }
+            }
+            if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
+            {
+                Debug.Log("Clicked on " + hit.collider.name);
+                if(scooped == false) // Check if already scooped
+                {
+                    PickUpCone(hit.collider.gameObject);
                 }
             }
             if (Physics.Raycast(ray, out hit, maxDistance, CustomerMovement.customerLayer))
@@ -56,36 +67,55 @@ public class Scooper : MonoBehaviour
         }
     }
 
-    void SpawnCone(GameObject tub)
+void SpawnCone(GameObject tub)
+{
+    string flavor = tub.name.ToLower();
+
+    // Find "Hand With Scooper" -> then find "CreamConeHand(Clone)" in children
+    GameObject handRoot = GameObject.Find("CreamConeHand(Clone)");
+    if (handRoot == null)
     {
-        string flavor = tub.name.ToLower();
+        Debug.LogError("Hand With Scooper not found.");
+        return;
+    }
 
-        GameObject coneToSpawn = null;
+    Transform coneParent = handRoot.transform.Find("cone/cream");
 
-        if (flavor.Contains("vanilla"))
-            coneToSpawn = vanillaConePrefab;
-        else if (flavor.Contains("chocolate"))
-            coneToSpawn = chocolateConePrefab;
-        else if (flavor.Contains("strawberry"))
-            coneToSpawn = strawberryConePrefab;
-        else if (flavor.Contains("mango"))
-            coneToSpawn = mangoConePrefab;
-        else if (flavor.Contains("blueberry"))
-            coneToSpawn = blueberryConePrefab;
-        // Add more flavors...
+    if (coneParent == null)
+    {
+        Debug.LogError("Couldn't find ice_grape under CreamConeHand(Clone)/cone.");
+        return;
+    }
 
-        if (coneToSpawn != null)
-        {
-            Vector3 spawnPosition = transform.position 
+    Renderer scoopRenderer = coneParent.GetComponent<Renderer>();
+    if (scoopRenderer != null)
+    {
+        if (flavor.Contains("vanilla")) scoopRenderer.material = vanillaMat;
+        else if (flavor.Contains("chocolate")) scoopRenderer.material = chocolateMat;
+        else if (flavor.Contains("strawberry")) scoopRenderer.material = strawberryMat;
+        else if (flavor.Contains("mango")) scoopRenderer.material = mangoMat;
+        else if (flavor.Contains("blueberry")) scoopRenderer.material = blueberryMat;
+    }
+    else
+    {
+        Debug.LogError("Renderer not found on cream");
+    }
+
+    scooped = true;
+}
+
+
+
+    public void PickUpCone(GameObject cones)
+    {
+        Vector3 spawnPosition = transform.position 
                                   + transform.right * 0.2f
                                   + transform.up * 1.1f
                                   + transform.forward * 0.40f; 
+        Instantiate(cone, spawnPosition, transform.rotation, transform.parent);
+        conePickedUp = true; 
 
-            Instantiate(coneToSpawn, spawnPosition, transform.rotation, transform.parent);
-            scooped = true; // Set scooped to true to prevent further scooping
-        }
     }
-
     public void GiveCone(GameObject customerObj)
         {
             CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
@@ -134,6 +164,7 @@ public class Scooper : MonoBehaviour
     public void ResetScooped()
     {
         scooped = false;
+        conePickedUp = false; 
     }
 
 
