@@ -7,12 +7,13 @@ public class Scooper : MonoBehaviour
     public LayerMask coneLayer; // Layer only for cones
     public GameObject cone; // Prefab for the cone to spawn
     private bool scooped = false; // Flag to check if already scooped
-    public bool conePickedUp = false; // Flag to check if cone is picked up
+    private bool conePickedUp = false; // Flag to check if cone is picked up
     public Material blueberryMat;
     public Material chocolateMat;
     public Material mangoMat;
     public Material strawberryMat;
     public Material vanillaMat;
+    private int scoopcount = 1; 
 
 
     // Add more prefabs as needed
@@ -31,7 +32,7 @@ public class Scooper : MonoBehaviour
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
 {
     Debug.Log("Clicked on " + hit.collider.name);
-    if (scooped == false && conePickedUp == true)
+    if (conePickedUp == true)
     {
         // Get the IceCreamSupply component from the clicked object or its parent
         IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
@@ -42,6 +43,7 @@ public class Scooper : MonoBehaviour
             if (supply.UseScoop())
             {
                 SpawnCone(hit.collider.gameObject); // Allow scooping
+                scooped = true; // Set scooped to tru
             }
             else
             {
@@ -78,14 +80,11 @@ public class Scooper : MonoBehaviour
                 if (customer != null)
                 {
                     GiveCone(customer.gameObject);
+                    ResetScooped(); 
+
                 }
                 
             }
-            //else
-            //{
-                //Debug.Log("Clicked on something else");
-
-            //}
 
         }
     }
@@ -102,13 +101,15 @@ void SpawnCone(GameObject tub)
         return;
     }
 
-    Transform coneParent = handRoot.transform.Find("cone/cream");
+    
+    Transform coneParent = handRoot.transform.Find("cone/cream"+scoopcount);
 
     if (coneParent == null)
     {
-        Debug.LogError("Couldn't find ice_grape under CreamConeHand(Clone)/cone.");
+        Debug.LogError("Thats the max amount of scoops you can put on the cone lil bro");
         return;
-    }
+    }else{scoopcount++; }
+    
 
     Renderer scoopRenderer = coneParent.GetComponent<Renderer>();
     if (scoopRenderer != null)
@@ -124,7 +125,7 @@ void SpawnCone(GameObject tub)
         Debug.LogError("Renderer not found on cream");
     }
 
-    scooped = true;
+    // scooped = true;
 }
 
 
@@ -188,6 +189,8 @@ void SpawnCone(GameObject tub)
     {
         scooped = false;
         conePickedUp = false; 
+        scoopcount = 1; 
+
     }
 
 
