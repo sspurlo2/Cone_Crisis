@@ -29,13 +29,36 @@ public class Scooper : MonoBehaviour
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
+{
+    Debug.Log("Clicked on " + hit.collider.name);
+    if (scooped == false && conePickedUp == true)
+    {
+        // Get the IceCreamSupply component from the clicked object or its parent
+        IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
+        
+        if (supply != null)
+        {
+            // Check if a scoop is available
+            if (supply.UseScoop())
             {
-                Debug.Log("Clicked on " + hit.collider.name);
-                if(scooped == false && conePickedUp == true) // Check if already scooped
-                {
-                    SpawnCone(hit.collider.gameObject);
-                }
+                SpawnCone(hit.collider.gameObject); // Allow scooping
             }
+            else
+            {
+                Debug.Log("No scoops left! Restock required.");
+                // Optional: Play a sound or show a UI warning
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No IceCreamSupply found on the clicked object.");
+        }
+    }
+    else
+    {
+        Debug.Log("Cannot scoop: Already scooped or no cone picked up.");
+    }
+}
             if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
@@ -58,11 +81,11 @@ public class Scooper : MonoBehaviour
                 }
                 
             }
-            else
-            {
-                Debug.Log("Clicked on something else");
+            //else
+            //{
+                //Debug.Log("Clicked on something else");
 
-            }
+            //}
 
         }
     }

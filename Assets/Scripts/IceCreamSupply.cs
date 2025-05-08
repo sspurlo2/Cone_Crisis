@@ -4,33 +4,35 @@ public class IceCreamSupply : MonoBehaviour
 {
     public int maxScoops = 5;
     public int currentScoops;
+    public MoneyDisplay moneyDisplay; // Assign this in the Inspector
+    public bool IsEmpty => currentScoops <= 0; // True when out of scoops
 
-    void Start()
-    {
-        currentScoops = maxScoops;
-    }
+    void Start() => currentScoops = maxScoops;
 
-    public bool UseScoop()
-    {
-        if (currentScoops > 0)
-        {
+    public bool UseScoop() {
+        if (currentScoops > 0) {
             currentScoops--;
             return true;
         }
+        Debug.Log("Out of scoops! Restock required.");
         return false;
     }
 
-    public bool CanRestock()
-    {
-        return GameManager.Instance.playerMoney >= 50f;
+    // Check if the player can restock (has $50)
+    public bool CanRestock() {
+        return moneyDisplay != null && moneyDisplay.CanAfford(50);
     }
 
-    public void Restock()
-    {
-        if (CanRestock())
-        {
-            GameManager.Instance.playerMoney -= 50f;
-            currentScoops = maxScoops;
+    // Deduct money and refill scoops
+    public void Restock() {
+        if (CanRestock()) {
+            bool paymentSuccess = moneyDisplay.SubtractMoney(50);
+            if (paymentSuccess) {
+                currentScoops = maxScoops;
+                Debug.Log("Restocked! Scoops: " + currentScoops);
+            }
+        } else {
+            Debug.Log("Not enough money to restock!");
         }
     }
 }

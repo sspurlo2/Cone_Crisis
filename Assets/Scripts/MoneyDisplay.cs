@@ -1,32 +1,33 @@
 using UnityEngine;
-using TMPro; // Import TextMeshPro namespace
+using TMPro;
 
 public class MoneyDisplay : MonoBehaviour
 {
-    // Reference to the TextMeshPro component to display the money
-    public TMP_Text moneyText;  // For TextMeshPro
-
-    // Example money value (could be updated dynamically in your game)
+    public TMP_Text moneyText;
     private int moneyAmount = 100;
 
-    void Start()
-    {
-        // Initialize the display when the script starts
-        UpdateMoneyDisplay();
+    void Start() => UpdateMoneyDisplay();
+
+    public void UpdateMoneyDisplay() {
+        if (moneyText != null) moneyText.text = "Money: $" + moneyAmount;
     }
 
-    // Method to update the money display
-    public void UpdateMoneyDisplay()
-    {
-        if (moneyText != null)
-        {
-            moneyText.text = "Money: $" + moneyAmount.ToString();
+    // New method: Check if the player can afford a cost
+    public bool CanAfford(int cost) {
+        return moneyAmount >= cost;
+    }
+
+    // New method: Deduct money safely
+    public bool SubtractMoney(int amount) {
+        if (CanAfford(amount)) {
+            moneyAmount -= amount;
+            UpdateMoneyDisplay();
+            return true; // Deduction successful
         }
+        return false; // Not enough money
     }
 
-    // Example method to add money
-    public void AddMoney(int amount)
-    {
+    public void AddMoney(int amount) {
         moneyAmount += amount;
         UpdateMoneyDisplay();
     }

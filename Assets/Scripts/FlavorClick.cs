@@ -4,17 +4,22 @@ public class FlavorClick : MonoBehaviour
 {
     public IceCreamSupply iceCreamSupply; // Drag this in for shared supply
 
-    void OnMouseDown()
+    // In FlavorClick.cs
+void OnMouseDown()
+{
+    if (iceCreamSupply == null)
     {
-        if (iceCreamSupply.UseScoop())
-        {
-            Debug.Log("Scooped from " + gameObject.name + "! Scoops left: " + iceCreamSupply.currentScoops);
-            // TODO: Add visual or game logic for serving
-        }
-        else
-        {
-            Debug.Log("Out of scoops! Please restock.");
-            // TODO: Show warning or disable interaction
-        }
+        Debug.LogError("IceCreamSupply reference not set!");
+        return;
     }
+
+    if (iceCreamSupply.UseScoop())
+    {
+        Debug.Log("Scooped! Remaining: " + iceCreamSupply.currentScoops);
+    }
+    else
+    {
+        Debug.Log("Out of scoops!");
+    }
+}
 }
