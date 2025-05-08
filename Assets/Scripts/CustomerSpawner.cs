@@ -8,9 +8,10 @@ public class CustomerSpawner : MonoBehaviour {
     public Transform targetPoint;
     public Transform exitPoint;
     public float timeBetweenSpawns = 20f;
-    public int maxCustomers = 5;
+    public int maxCustomers = 4;
     public List<CustomerMovement> customerLine = new List<CustomerMovement>();
     private int customersSpawned = 0;
+    public List<Transform> queuePositions; 
 
     void Start() {
         StartCoroutine(SpawnCustomers());
@@ -29,17 +30,14 @@ public class CustomerSpawner : MonoBehaviour {
         CustomerMovement moveScript = newCustomer.GetComponent<CustomerMovement>();
 
         if (moveScript != null) {
-            Vector3 offset = new Vector3(0, 0, customerLine.Count * 1.5f);
-            Vector3 adjustedTargetPos = targetPoint.position + offset;
-
-            GameObject tempTarget = new GameObject("TempTarget");
-            tempTarget.transform.position = adjustedTargetPos;
-
-            moveScript.targetPoint = tempTarget.transform;
-            moveScript.exitPoint = exitPoint;
+            int index = customerLine.Count;
+            if (index < queuePositions.Count) {
+                moveScript.targetPoint = queuePositions[index];
+            } else {
+                Debug.LogWarning("Not enough queue positions for customer " + index);
+            }
 
             customerLine.Add(moveScript);
-            Destroy(tempTarget, 30f);
         }
     }
 }

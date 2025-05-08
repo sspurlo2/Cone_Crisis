@@ -12,25 +12,26 @@ public class PlayerStack : MonoBehaviour {
 
     public void TrySubmitOrder() {
         if (currentOrder.CheckOrder(playerFlavors)) {
-            Debug.Log("Correct Order!");
-            playerFlavors.Clear();
+        Debug.Log("Correct Order!");
+        playerFlavors.Clear();
 
-            if (currentOrder.currentCustomer != null) {
-                currentOrder.currentCustomer.MoveToRegister();
+        if (currentOrder.currentCustomer != null) {
+            currentOrder.currentCustomer.MoveToRegister();
 
-                CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
-                if (spawner != null && spawner.customerLine.Count > 0) {
-                    spawner.customerLine.RemoveAt(0);
+            CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
+            if (spawner != null && spawner.customerLine.Count > 0) {
+                spawner.customerLine.RemoveAt(0); // remove the one that moved to register
 
-                    if (spawner.customerLine.Count > 0) {
-                        CustomerMovement nextCustomer = spawner.customerLine[0];
-                        Vector3 frontPos = currentOrder.receiptCube.transform.position;
-                        nextCustomer.MoveToFront(frontPos);
+                // move remaining customers forward in line
+                for (int i = 0; i < spawner.customerLine.Count; i++) {
+                    if (i < spawner.queuePositions.Count) {
+                        spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
                     }
                 }
             }
+        }
 
-            currentOrder.receiptCube.SetActive(false);
+        currentOrder.receiptCube.SetActive(false);
         } else {
             Debug.Log("Incorrect order. Try again.");
         }

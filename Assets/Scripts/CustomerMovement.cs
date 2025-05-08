@@ -30,14 +30,13 @@ public class CustomerMovement : MonoBehaviour
 
     }
 private void Update() {
-    if (hasPayed) {
-        Debug.Log("Leaving the store!");
+    if (hasPayed && exitPoint != null) {
         MoveTowardsTarget(exitPoint);
         if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f) {
-            Destroy(gameObject); // customer leaves
+            Destroy(gameObject);
         }
     }
-    else if (hasOrdered) {
+    else if (hasOrdered && registerPoint != null) {
         MoveTowardsTarget(registerPoint);
     }
     else if (targetPoint != null) {
@@ -84,18 +83,10 @@ private void Update() {
         hasPayed = true;
     }
 
-  public void MoveToFront(Vector3 position) {
-        StartCoroutine(MoveUpAfterDelay(position));
-    }
-
-    private IEnumerator MoveUpAfterDelay(Vector3 position) {
-        yield return new WaitForSeconds(3f);
-        GameObject tempTarget = new GameObject("TempFrontTarget");
-        tempTarget.transform.position = position;
-        targetPoint = tempTarget.transform;
-        hasOrdered = false;
-        hasPayed = false;
-        Destroy(tempTarget, 15f);
+    public void MoveToFront(Transform target) {
+    targetPoint = target;
+    hasOrdered = false;
+    hasPayed = false;
     }
 }
 
