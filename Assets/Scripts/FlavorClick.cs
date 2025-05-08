@@ -2,24 +2,31 @@ using UnityEngine;
 
 public class FlavorClick : MonoBehaviour
 {
-    public IceCreamSupply iceCreamSupply; // Drag this in for shared supply
+    public IceCreamSupply iceCreamSupply; // Assign your ice cream supply
+    public GameObject restockButton; // Drag your restock button here in the Inspector
 
-    // In FlavorClick.cs
-void OnMouseDown()
-{
-    if (iceCreamSupply == null)
+    void OnMouseDown()
     {
-        Debug.LogError("IceCreamSupply reference not set!");
-        return;
-    }
+        // Prevent scooping if restock button is visible
+        if (restockButton != null && restockButton.activeInHierarchy)
+        {
+            Debug.Log("Can't scoop - restock menu is open!");
+            return;
+        }
 
-    if (iceCreamSupply.UseScoop())
-    {
-        Debug.Log("Scooped! Remaining: " + iceCreamSupply.currentScoops);
+        if (iceCreamSupply == null)
+        {
+            Debug.LogError("IceCreamSupply reference not set!");
+            return;
+        }
+
+        if (iceCreamSupply.UseScoop())
+        {
+            Debug.Log("Scooped! Remaining: " + iceCreamSupply.currentScoops);
+        }
+        else
+        {
+            Debug.Log("Out of scoops!");
+        }
     }
-    else
-    {
-        Debug.Log("Out of scoops!");
-    }
-}
 }

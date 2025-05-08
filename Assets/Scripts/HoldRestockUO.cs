@@ -11,26 +11,35 @@ public class HoldRestockUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     private float holdTimer = 0f;
 
     void Update()
+{
+    if (isHolding && iceCreamSupply != null)
     {
-        if (isHolding && iceCreamSupply != null)
-        {
-            holdTimer += Time.deltaTime;
-            progressSlider.value = holdTimer;
+        holdTimer += Time.deltaTime;
+        progressSlider.value = holdTimer; // Ensure slider max is set to 3 in Inspector
 
-            if (holdTimer >= 3f)
+        if (holdTimer >= 3f)
+        {
+            // Debug log to verify restock conditions
+            Debug.Log($"Attempting restock. CanRestock: {iceCreamSupply.CanRestock()}");
+            
+            if (iceCreamSupply.CanRestock())
             {
-                // Restock ONLY if the player can afford it
-                if (iceCreamSupply.CanRestock())
-                {
-                    iceCreamSupply.Restock();
-                }
-                ResetHold();
+                iceCreamSupply.Restock();
+                Debug.Log("Restock successful!");
             }
+            else
+            {
+                Debug.LogWarning("Can't restock: Not enough money or supply not empty!");
+            }
+
+            ResetHold();
         }
     }
+}
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        Debug.Log("Pointer Down!"); 
         // Check if the supply exists AND can be restocked
         if (iceCreamSupply != null && iceCreamSupply.CanRestock())
         {
@@ -42,6 +51,7 @@ public class HoldRestockUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        Debug.Log("Pointer Up!");
         ResetHold();
     }
 
@@ -49,6 +59,6 @@ public class HoldRestockUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     {
         isHolding = false;
         holdTimer = 0f;
-        progressSlider.value = 0f;
+        if (progressSlider != null) progressSlider.value = 0f;
     }
 }
