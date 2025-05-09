@@ -156,6 +156,17 @@ void SpawnCone(GameObject tub)
                     return;
                 }
 
+            CustomerSpawner spawner = FindFirstObjectByType<CustomerSpawner>();
+            if (spawner != null)
+            {
+                spawner.customerLine.RemoveAt(0);
+
+                for (int i = 0; i < spawner.customerLine.Count; i++)
+                {
+                    spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
+                }
+            }
+
                 foreach (Transform child in playerCamObj.transform)
                 {
                     if (child.CompareTag("Cone"))
