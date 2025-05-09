@@ -31,6 +31,10 @@ public class RestockButtonManager : MonoBehaviour
         // Position the button over the empty tub
         if (showButton)
         {
+            // Slightly nudge the screen position upward
+            tubScreenPosition.y += 50f; // pixels, not world units
+
+
             restockButton.GetComponent<RectTransform>().position = tubScreenPosition;
         }
     }

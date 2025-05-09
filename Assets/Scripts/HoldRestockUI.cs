@@ -12,7 +12,7 @@ public class HoldRestockUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     void Update()
 {
-    if (isHolding && iceCreamSupply != null)
+    if (isHolding != null)
     {
         holdTimer += Time.deltaTime;
         progressSlider.value = holdTimer; // Ensure slider max is set to 3 in Inspector

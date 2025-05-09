@@ -30,37 +30,37 @@ public class Scooper : MonoBehaviour
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
-{
-    Debug.Log("Clicked on " + hit.collider.name);
-    if (conePickedUp == true)
-    {
-        // Get the IceCreamSupply component from the clicked object or its parent
-        IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
-        
-        if (supply != null)
         {
-            // Check if a scoop is available
-            if (supply.UseScoop())
+            Debug.Log("Clicked on " + hit.collider.name);
+            if (conePickedUp == true)
             {
-                SpawnCone(hit.collider.gameObject); // Allow scooping
-                scooped = true; // Set scooped to tru
+                // Get the IceCreamSupply component from the clicked object or its parent
+                IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
+                
+                if (supply != null)
+                {
+                    // Check if a scoop is available
+                    if (supply.UseScoop())
+                    {
+                        SpawnCone(hit.collider.gameObject); // Allow scooping
+                        scooped = true; // Set scooped to tru
+                    }
+                    else
+                    {
+                        Debug.Log("No scoops left! Restock required.");
+                        // Optional: Play a sound or show a UI warning
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("No IceCreamSupply found on the clicked object.");
+                }
             }
             else
             {
-                Debug.Log("No scoops left! Restock required.");
-                // Optional: Play a sound or show a UI warning
+                Debug.Log("Cannot scoop: Already scooped or no cone picked up.");
             }
         }
-        else
-        {
-            Debug.LogWarning("No IceCreamSupply found on the clicked object.");
-        }
-    }
-    else
-    {
-        Debug.Log("Cannot scoop: Already scooped or no cone picked up.");
-    }
-}
             if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
@@ -184,6 +184,8 @@ void SpawnCone(GameObject tub)
         if (customer != null)
         {
             customer.Pay();
+            MoneyDisplay moneyDisplay = FindObjectOfType<MoneyDisplay>();
+            moneyDisplay.AddMoney(5); // Add money to the total
             // Sam add a command here to add the money to our total
             // samalama bim bam, bam, sam thank you ma'am, big lamb bam. if sam was a lamb, she would be a big lamb.
             Debug.Log("Customer has paid!");
