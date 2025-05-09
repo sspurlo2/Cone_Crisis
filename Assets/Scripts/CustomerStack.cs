@@ -12,26 +12,34 @@ public class PlayerStack : MonoBehaviour {
 
     public void TrySubmitOrder() {
         if (currentOrder.CheckOrder(playerFlavors)) {
-        Debug.Log("Correct Order!");
-        playerFlavors.Clear();
-
-        if (currentOrder.currentCustomer != null) {
-            currentOrder.currentCustomer.MoveToRegister();
+            Debug.Log("Order correct! Updating queue...");
 
             CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
-            if (spawner != null && spawner.customerLine.Count > 0) {
-                spawner.customerLine.RemoveAt(0); // remove the one that moved to register
+            if (spawner != null) {
+                //log the queue before removal
+                Debug.Log($"Queue before removal: {spawner.customerLine.Count} customers");
+                for (int i = 0; i < spawner.customerLine.Count; i++) {
+                    Debug.Log($"Customer {i}: {spawner.customerLine[i].gameObject.name}");
+                }
 
-                // move remaining customers forward in line
+                // Remove the first customer
+                if (spawner.customerLine.Count > 0) {
+                    spawner.customerLine.RemoveAt(0);
+                    Debug.Log("First customer removed.");
+                }
+
+                //update remaining customers
                 for (int i = 0; i < spawner.customerLine.Count; i++) {
                     if (i < spawner.queuePositions.Count) {
+                        Debug.Log($"Moving customer {i} to {spawner.queuePositions[i].name}");
                         spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
                     }
                 }
             }
-        }
 
-        currentOrder.receiptCube.SetActive(false);
+            //reset player stack & receipt
+            playerFlavors.Clear();
+            currentOrder.receiptCube.SetActive(false);
         } else {
             Debug.Log("Incorrect order. Try again.");
         }

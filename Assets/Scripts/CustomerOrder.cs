@@ -29,14 +29,17 @@ public class CustomerOrder : MonoBehaviour {
     void GenerateOrder() {
         flavorOrder.Clear();
         string[] flavors = { "Strawberry", "Vanilla", "Chocolate", "Blueberry", "Mango"}; //flavor options
-        string randomFlavor = flavors[Random.Range(0, flavors.Length)]; //only one flavor for tutorial
-        flavorOrder.Add(randomFlavor);
+        int numScoops = Random.Range(1, 4); //rangeee 1-3 scoops bc min is inclusive max is exclusive
+        for (int i = 0; i < numScoops; i++) {
+            string randomFlavor = flavors[Random.Range(0, flavors.Length)]; //only one flavor for tutorial
+            flavorOrder.Add(randomFlavor);
+        }  
     }
 
     void DisplayOrder() {
         receiptText.text = "Order:\n";
-        foreach (var flavor in flavorOrder) {
-            receiptText.text += flavor + "\n";
+        for (int i = 0; i < flavorOrder.Count; i++) {
+            receiptText.text += $"Scoop {i + 1}: {flavorOrder[i]}\n";
         }
     }
 
