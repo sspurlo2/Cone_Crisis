@@ -4,31 +4,36 @@ using TMPro;
 public class MoneyDisplay : MonoBehaviour
 {
     public TMP_Text moneyText;
-    private int moneyAmount = 100;
 
-    void Start() => UpdateMoneyDisplay();
-
-    public void UpdateMoneyDisplay() {
-        if (moneyText != null) moneyText.text = "Money: $" + moneyAmount;
+    void Start()
+    {
+        UpdateMoneyUI();
     }
 
-    // New method: Check if the player can afford a cost
-    public bool CanAfford(int cost) {
-        return moneyAmount >= cost;
+    public void AddMoney(float amount)
+    {
+        GameManager.Instance.playerMoney += amount;
+        UpdateMoneyUI();
     }
 
-    // New method: Deduct money safely
-    public bool SubtractMoney(int amount) {
-        if (CanAfford(amount)) {
-            moneyAmount -= amount;
-            UpdateMoneyDisplay();
-            return true; // Deduction successful
+    public bool SubtractMoney(float amount)
+    {
+        if (GameManager.Instance.playerMoney >= amount)
+        {
+            GameManager.Instance.playerMoney -= amount;
+            UpdateMoneyUI();
+            return true;
         }
-        return false; // Not enough money
+        return false;
     }
 
-    public void AddMoney(int amount) {
-        moneyAmount += amount;
-        UpdateMoneyDisplay();
+    public bool CanAfford(float amount)
+    {
+        return GameManager.Instance.playerMoney >= amount;
+    }
+
+    private void UpdateMoneyUI()
+    {
+        moneyText.text = $"${GameManager.Instance.playerMoney:F2}";
     }
 }

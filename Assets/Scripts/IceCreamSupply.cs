@@ -4,7 +4,8 @@ public class IceCreamSupply : MonoBehaviour
 {
     public int maxScoops = 5;
     public int currentScoops;
-    public MoneyDisplay moneyDisplay; // Assign this in the Inspector
+    // Remove the moneyDisplay reference, since you're handling money through GameManager
+    // public MoneyDisplay moneyDisplay; // Remove this line
     public bool IsEmpty => currentScoops <= 0; // True when out of scoops
 
     void Start() => currentScoops = maxScoops;
@@ -18,15 +19,15 @@ public class IceCreamSupply : MonoBehaviour
         return false;
     }
 
-    // Check if the player can restock (has $50)
+    // Check if the player can restock (has enough money in GameManager)
     public bool CanRestock() {
-        return moneyDisplay != null && moneyDisplay.CanAfford(50);
+        return GameManager.Instance.playerMoney >= 50f; // Check if the player has enough money
     }
 
     // Deduct money and refill scoops
     public void Restock() {
         if (CanRestock()) {
-            bool paymentSuccess = moneyDisplay.SubtractMoney(50);
+            bool paymentSuccess = SubtractMoney(50f);  // Deduct 50
             if (paymentSuccess) {
                 currentScoops = maxScoops;
                 Debug.Log("Restocked! Scoops: " + currentScoops);
@@ -34,5 +35,14 @@ public class IceCreamSupply : MonoBehaviour
         } else {
             Debug.Log("Not enough money to restock!");
         }
+    }
+
+    // Subtract money from the player
+    private bool SubtractMoney(float amount) {
+        if (GameManager.Instance.playerMoney >= amount) {
+            GameManager.Instance.playerMoney -= amount;
+            return true; // Payment successful
+        }
+        return false; // Not enough money
     }
 }

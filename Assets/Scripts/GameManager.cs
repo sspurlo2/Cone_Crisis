@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     public float playerMoney = 0f;
 
+
     void Awake()
     {
         if (Instance == null)
