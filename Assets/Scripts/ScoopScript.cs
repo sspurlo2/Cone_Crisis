@@ -149,6 +149,7 @@ void SpawnCone(GameObject tub)
             {
                 customer.MoveToRegister(); // Call the method to make the customer leave
                 Debug.Log("Gave cone to customer!");
+
                 GameObject playerCamObj = GameObject.Find("PlayerCam");
                 if (playerCamObj == null)
                 {
@@ -176,6 +177,12 @@ void SpawnCone(GameObject tub)
                         break;
                     }
                 }
+
+                PlayerStack player = FindObjectOfType<PlayerStack>();
+                if (player != null) {
+                    player.TrySubmitOrder(); //checks the order and plays sound
+                }
+
             }
         }
     
