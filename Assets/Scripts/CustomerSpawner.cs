@@ -8,7 +8,7 @@ public class CustomerSpawner : MonoBehaviour {
     public Transform targetPoint;
     public Transform exitPoint;
     public float timeBetweenSpawns = 20f;
-    public int maxCustomers = 4;
+    public int maxCustomers = 20;
     public List<CustomerMovement> customerLine = new List<CustomerMovement>();
     private int customersSpawned = 0;
     public List<Transform> queuePositions; 
