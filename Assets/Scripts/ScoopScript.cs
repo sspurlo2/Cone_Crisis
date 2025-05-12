@@ -14,6 +14,7 @@ public class Scooper : MonoBehaviour
     public Material strawberryMat;
     public Material vanillaMat;
     private int scoopcount = 1; 
+    private int price = 0; // Base price for a cone
 
 
     // Add more prefabs as needed
@@ -43,6 +44,7 @@ public class Scooper : MonoBehaviour
                     if (supply.UseScoop())
                     {
                         SpawnCone(hit.collider.gameObject); // Allow scooping
+                        if(scoopcount > 2){price += 2;}
                         scooped = true; // Set scooped to tru
                     }
                     else
@@ -218,9 +220,11 @@ public class Scooper : MonoBehaviour
         {
             customer.Pay();
             MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
-            moneyDisplay.AddMoney(5); // Add money to the total
-            // Sam add a command here to add the money to our total
-            // samalama bim bam, bam, sam thank you ma'am, big lamb bam. if sam was a lamb, she would be a big lamb.
+            
+            moneyDisplay.AddMoney(5+price); // Add money to the total
+
+            price = 0; // Base price for a cone
+
             Debug.Log("Customer has paid!");
         }
         else
