@@ -89,44 +89,70 @@ public class Scooper : MonoBehaviour
         }
     }
 
-void SpawnCone(GameObject tub)
-{
-    string flavor = tub.name.ToLower();
-
-    // Find "Hand With Scooper" -> then find "CreamConeHand(Clone)" in children
-    GameObject handRoot = GameObject.Find("CreamConeHand(Clone)");
-    if (handRoot == null)
+    void SpawnCone(GameObject tub)
     {
-        Debug.LogError("Hand With Scooper not found.");
-        return;
+        string flavor = tub.name.ToLower();
+
+        // Find "Hand With Scooper" -> then find "CreamConeHand(Clone)" in children
+        GameObject handRoot = GameObject.Find("CreamConeHand(Clone)");
+        if (handRoot == null)
+        {
+            Debug.LogError("Hand With Scooper not found.");
+            return;
+        }
+
+        Transform coneParent = handRoot.transform.Find("cone/cream" + scoopcount);
+
+        if (coneParent == null)
+        {
+            Debug.LogError("That's the max amount of scoops you can put on the cone, lil bro");
+            return;
+        }
+        else
+        {
+            scoopcount++;
+        }
+
+        Renderer scoopRenderer = coneParent.GetComponent<Renderer>();
+        if (scoopRenderer != null)
+        {
+            string cleanedFlavor = ""; // Will store the formatted flavor string
+
+            if (flavor.Contains("vanilla")) {
+                scoopRenderer.material = vanillaMat;
+                cleanedFlavor = "Vanilla";
+            }
+            else if (flavor.Contains("chocolate")) {
+                scoopRenderer.material = chocolateMat;
+                cleanedFlavor = "Chocolate";
+            }
+            else if (flavor.Contains("strawberry")) {
+                scoopRenderer.material = strawberryMat;
+                cleanedFlavor = "Strawberry";
+            }
+            else if (flavor.Contains("mango")) {
+                scoopRenderer.material = mangoMat;
+                cleanedFlavor = "Mango";
+            }
+            else if (flavor.Contains("blueberry")) {
+                scoopRenderer.material = blueberryMat;
+                cleanedFlavor = "Blueberry";
+            }
+
+            // Add flavor to player stack
+            if (!string.IsNullOrEmpty(cleanedFlavor))
+            {
+                PlayerStack player = FindFirstObjectByType<PlayerStack>();
+                if (player != null)
+                {
+                    player.AddFlavor(cleanedFlavor);
+                    Debug.Log($"Added flavor to player stack: {cleanedFlavor}");
+                }
+            }
+        }
+        else{Debug.LogError("Renderer not found on cream");}
     }
 
-    
-    Transform coneParent = handRoot.transform.Find("cone/cream"+scoopcount);
-
-    if (coneParent == null)
-    {
-        Debug.LogError("Thats the max amount of scoops you can put on the cone lil bro");
-        return;
-    }else{scoopcount++; }
-    
-
-    Renderer scoopRenderer = coneParent.GetComponent<Renderer>();
-    if (scoopRenderer != null)
-    {
-        if (flavor.Contains("vanilla")) scoopRenderer.material = vanillaMat;
-        else if (flavor.Contains("chocolate")) scoopRenderer.material = chocolateMat;
-        else if (flavor.Contains("strawberry")) scoopRenderer.material = strawberryMat;
-        else if (flavor.Contains("mango")) scoopRenderer.material = mangoMat;
-        else if (flavor.Contains("blueberry")) scoopRenderer.material = blueberryMat;
-    }
-    else
-    {
-        Debug.LogError("Renderer not found on cream");
-    }
-
-    // scooped = true;
-}
 
 
 
@@ -178,7 +204,7 @@ void SpawnCone(GameObject tub)
                     }
                 }
 
-                PlayerStack player = FindObjectOfType<PlayerStack>();
+                PlayerStack player = FindFirstObjectByType<PlayerStack>();
                 if (player != null) {
                     player.TrySubmitOrder(); //checks the order and plays sound
                 }
@@ -191,7 +217,7 @@ void SpawnCone(GameObject tub)
         if (customer != null)
         {
             customer.Pay();
-            MoneyDisplay moneyDisplay = FindObjectOfType<MoneyDisplay>();
+            MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
             moneyDisplay.AddMoney(5); // Add money to the total
             // Sam add a command here to add the money to our total
             // samalama bim bam, bam, sam thank you ma'am, big lamb bam. if sam was a lamb, she would be a big lamb.

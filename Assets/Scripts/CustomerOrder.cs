@@ -23,6 +23,11 @@ public class CustomerOrder : MonoBehaviour {
             GenerateOrder();
             DisplayOrder();
             currentCustomer = other.GetComponent<CustomerMovement>();
+
+            PlayerStack playerStack = FindFirstObjectByType<PlayerStack>();
+            if (playerStack != null) {
+                playerStack.currentOrder = this;
+            }
         }
     }
 

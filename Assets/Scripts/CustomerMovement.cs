@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CustomerMovement : MonoBehaviour
 {
-    public Transform targetPoint; // Now accepts GameObjects
+    public Transform targetPoint;
     public Transform exitPoint;
     public Transform registerPoint;
 

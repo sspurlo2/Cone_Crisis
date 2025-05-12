@@ -36,6 +36,9 @@ public class PlayerStack : MonoBehaviour {
             Debug.Log("Incorrect order");
 
             if (incorrectOrderClips.Length > 0) {
+
+                CustomerMovement customer = FindFirstObjectByType<CustomerMovement>();
+                customer.Pay();
                 AudioClip randomClip = incorrectOrderClips[Random.Range(0, incorrectOrderClips.Length)];
                 audioSource.PlayOneShot(randomClip);
             }
