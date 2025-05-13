@@ -1,69 +1,55 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Movement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 5f;
+    public float sprintSpeed = 9f;
+    private float currentSpeed;
 
-    public float groundDrag;
     [Header("Ground Check")]
-    public float playerHeight;
+    public float playerHeight = 2f;
     public LayerMask whatIsGround;
-    bool grounded;
+    private bool grounded;
 
     public Transform orientation;
 
-    float horizontalInput;
-    float verticalInput;
-    Vector3 moveDirection;
-    Rigidbody rb;
+    private float horizontalInput;
+    private float verticalInput;
+    private Vector3 moveDirection;
+    private Rigidbody rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; // freeze the rotation of the rigidbody to prevent it from tipping over
+        rb.freezeRotation = true;
     }
-   private void Update(){
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround); // check if the player is grounded
-    
+    private void Update()
+    {
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+
         MyInput();
         MovePlayer();
-        SpeedControl();
-        StopIfNoInput();
-        if(grounded){
-            rb.linearDamping = groundDrag; // apply drag when grounded
-        }else{
-            rb.linearDamping = 0; // remove drag when in the air
-        }
     }
 
-    private void MyInput(){
-        horizontalInput = Input.GetAxis("Horizontal"); // A/D or Left/Right Arrow
-        verticalInput = Input.GetAxis("Vertical"); // W/S or Up/Down Arrow
+    private void MyInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
 
+        // Sprint if holding Left Shift
+        currentSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed;
     }
 
-    private void MovePlayer(){
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput; 
-        moveDirection.Normalize(); // normalize the vector to prevent faster diagonal movement
+    private void MovePlayer()
+    {
+        moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
 
-        rb.AddForce(moveDirection * moveSpeed); // apply force to the rigidbody in the direction of movement
+        Vector3 targetVelocity = moveDirection * currentSpeed;
+        Vector3 currentVelocity = rb.linearVelocity;
+
+        rb.linearVelocity = new Vector3(targetVelocity.x, currentVelocity.y, targetVelocity.z);
     }
-
-private void SpeedControl(){
-    Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-    if (flatVel.magnitude > moveSpeed){
-        Vector3 limitedVel = flatVel.normalized * moveSpeed;
-        rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
-    }
-}
-
-private void StopIfNoInput(){
-    if (horizontalInput == 0 && verticalInput == 0 && grounded){
-        Vector3 stopVel = new Vector3(0, rb.linearVelocity.y, 0);
-        rb.linearVelocity = stopVel;
-    }
-}
 }
