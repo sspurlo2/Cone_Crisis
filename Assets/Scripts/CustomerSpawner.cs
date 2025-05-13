@@ -26,20 +26,26 @@ public class CustomerSpawner : MonoBehaviour {
     }
 
     void SpawnCustomer() {
-        if (customerLine.Count >= queuePositions.Count) {
-            Debug.LogWarning("No more queue spots left!");
-            return;
-        }
-
         GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
         CustomerMovement moveScript = newCustomer.GetComponent<CustomerMovement>();
-        
+
         if (moveScript != null) {
-            // Assign the next available queue position
-            int nextSpotIndex = customerLine.Count;
-            moveScript.targetPoint = queuePositions[nextSpotIndex];
-            customerLine.Add(moveScript); // Add to the line
-            Debug.Log($"Spawned customer. Queue spot: {nextSpotIndex}");
+            int index = customerLine.Count;
+            Transform target;
+
+            if (index < queuePositions.Count) {
+                target = queuePositions[index];
+            } else {
+                // Create a new waiting position further back
+                Vector3 newPos = queuePositions[queuePositions.Count - 1].position + new Vector3(0, 0, (index - queuePositions.Count + 1) * 1.5f);
+                GameObject tempTarget = new GameObject("ExtraQueueSpot_" + index);
+                tempTarget.transform.position = newPos;
+                target = tempTarget.transform;
+            }
+
+            moveScript.targetPoint = target;
+            customerLine.Add(moveScript);
+            Debug.Log($"Spawned customer #{index} at {target.position}");
         }
     }
 }

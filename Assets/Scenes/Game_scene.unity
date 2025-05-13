@@ -896,7 +896,7 @@ MonoBehaviour:
   targetPoint: {fileID: 735063669}
   exitPoint: {fileID: 1110056892}
   timeBetweenSpawns: 10
-  maxCustomers: 5
+  maxCustomers: 10
   customerLine: []
   queuePositions:
   - {fileID: 735063669}
