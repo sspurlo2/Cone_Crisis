@@ -20,28 +20,36 @@ public class PlayerStack : MonoBehaviour {
 
     public bool TrySubmitOrder()
     {
+        if (currentOrder == null || currentOrder.currentCustomer == null) {
+            Debug.LogWarning("No current order or customer to check against.");
+            return false;
+        }
+
         bool isCorrect = currentOrder.CheckOrder(playerFlavors);
 
-        if (isCorrect){
+        if (isCorrect) {
             Debug.Log("Order correct!");
             playerFlavors.Clear();
-            //currentOrder.receiptCube.SetActive(false);
 
             if (correctOrderClips.Length > 0){
                 AudioClip randomClip = correctOrderClips[Random.Range(0, correctOrderClips.Length)];
                 audioSource.PlayOneShot(randomClip);
             }
 
-        } else {
-            Debug.Log("Incorrect order");
+            currentOrder.currentCustomer.MoveToRegister();
+            currentOrder.receiptCube.SetActive(false);
+        }
+        else {
+            Debug.Log("Incorrect order!");
 
-            if (incorrectOrderClips.Length > 0) {
-
-                CustomerMovement customer = FindFirstObjectByType<CustomerMovement>();
-                currentOrder.currentCustomer.Pay();
+            if (incorrectOrderClips.Length > 0){
                 AudioClip randomClip = incorrectOrderClips[Random.Range(0, incorrectOrderClips.Length)];
                 audioSource.PlayOneShot(randomClip);
             }
+
+            // have the customer leave (but no reward)
+            currentOrder.currentCustomer.Pay();
+            currentOrder.receiptCube.SetActive(false);
         }
 
         return isCorrect;
