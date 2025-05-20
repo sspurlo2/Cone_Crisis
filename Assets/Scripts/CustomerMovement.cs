@@ -7,8 +7,8 @@ public class CustomerMovement : MonoBehaviour
     public Transform exitPoint;
     public Transform registerPoint;
 
-    public float moveSpeed = 2f; 
-    private bool hasOrdered = false; 
+    public float moveSpeed = 2f;
+    private bool hasOrdered = false;
     private bool hasPayed = false; //has the customer paid?
     public static LayerMask customerLayer; //layer for customers
 
@@ -29,23 +29,29 @@ public class CustomerMovement : MonoBehaviour
         }
 
     }
-private void Update() {
-    if (hasPayed && exitPoint != null) {
-        MoveTowardsTarget(exitPoint);
-        if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f) {
-            Destroy(gameObject);
+    private void Update()
+    {
+        if (hasPayed && exitPoint != null)
+        {
+            MoveTowardsTarget(exitPoint);
+            if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f)
+            {
+                Destroy(gameObject);
+            }
+        }
+        else if (hasOrdered && registerPoint != null)
+        {
+            MoveTowardsTarget(registerPoint);
+        }
+        else if (targetPoint != null)
+        {
+            MoveTowardsTarget(targetPoint);
         }
     }
-    else if (hasOrdered && registerPoint != null) {
-        MoveTowardsTarget(registerPoint);
-    }
-    else if (targetPoint != null) {
-        MoveTowardsTarget(targetPoint);
-    }
-}
 
 
-    public void MoveTowardsTarget(Transform destination) {
+    public void MoveTowardsTarget(Transform destination)
+    {
         transform.position = Vector3.MoveTowards(transform.position, destination.position, moveSpeed * Time.deltaTime);
 
         Vector3 direction;
@@ -75,18 +81,28 @@ private void Update() {
     }
 
 
-    public void MoveToRegister() {
+    public void MoveToRegister()
+    {
         hasOrdered = true;
     }
-    public void Pay() {
-        
+    public void Pay()
+    {
+
         hasPayed = true;
     }
 
-    public void MoveToFront(Transform target) {
-    targetPoint = target;
-    hasOrdered = false;
-    hasPayed = false;
+    public void MoveToFront(Transform target)
+    {
+        targetPoint = target;
+        hasOrdered = false;
+        hasPayed = false;
     }
+    public void WalkOut()
+{
+    // Force the customer to skip everything and go to exit
+    hasOrdered = false;
+    hasPayed = true;
+}
+
 }
 
