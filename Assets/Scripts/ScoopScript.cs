@@ -2,100 +2,97 @@ using UnityEngine;
 
 public class Scooper : MonoBehaviour
 {
-    public Camera cam; // Your main camera
-    public LayerMask iceCreamLayer; // Layer only for ice cream tubs
-    public LayerMask coneLayer; // Layer only for cones
-    public GameObject cone; // Prefab for the cone to spawn
-    private bool scooped = false; // Flag to check if already scooped
-    private bool conePickedUp = false; // Flag to check if cone is picked up
-    public Material blueberryMat;
-    public Material chocolateMat;
-    public Material mangoMat;
-    public Material strawberryMat;
-    public Material vanillaMat;
-    private int scoopcount = 1; 
-    private int price = 0; // Base price for a cone
-
-
-    // Add more prefabs as needed
-
-    public float maxDistance = 3f; // How close you need to be
+    public Camera cam;
+    public LayerMask iceCreamLayer;
+    public LayerMask coneLayer;
+    public GameObject cone;
+    private bool scooped = false;
+    private bool conePickedUp = false;
+    public Material blueberryMat, chocolateMat, mangoMat, strawberryMat, vanillaMat;
+    private int scoopcount = 1;
+    private int price = 0;
+    public float maxDistance = 3f;
 
     void Update()
     {
-        
-
-        if (Input.GetMouseButtonDown(0)) // Left click
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
+            // Ice Cream Click
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
-        {
-            Debug.Log("Clicked on " + hit.collider.name);
-            if (conePickedUp == true)
             {
-                // Get the IceCreamSupply component from the clicked object or its parent
-                IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
-                
-                if (supply != null)
+                Debug.Log("Clicked on " + hit.collider.name);
+
+                if (!conePickedUp)
                 {
-                    // Check if a scoop is available
-                    if (supply.UseScoop())
+                    if (TutorialManager.Instance.step <= 2)
                     {
-                        SpawnCone(hit.collider.gameObject); // Allow scooping
-                        if(scoopcount > 2){price += 2;}
-                        scooped = true; // Set scooped to tru
-                    }
-                    else
-                    {
-                        Debug.Log("No scoops left! Restock required.");
-                        // Optional: Play a sound or show a UI warning
+                        TutorialManager.Instance.step = 1;
+                        TutorialManager.Instance.ShowStep();
+                        TutorialManager.Instance.ForceMessage("Click on the cone first!");
                     }
                 }
                 else
                 {
-                    Debug.LogWarning("No IceCreamSupply found on the clicked object.");
+                    IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
+                    if (supply != null && supply.UseScoop())
+                    {
+                        SpawnCone(hit.collider.gameObject);
+                        if (scoopcount > 2) price += 2;
+                        scooped = true;
+
+                        if (TutorialManager.Instance.step == 2)
+                            TutorialManager.Instance.AdvanceStep(); // → Step 3: Hand to customer
+                    }
+                    else
+                    {
+                        Debug.Log("No scoops left! Restock required.");
+                    }
                 }
             }
-            else
-            {
-                Debug.Log("Cannot scoop: Already scooped or no cone picked up.");
-            }
-        }
+
+            // Cone Click
             if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
-                if(scooped == false) // Check if already scooped
+                if (!scooped)
                 {
                     PickUpCone(hit.collider.gameObject);
+
+                    if (TutorialManager.Instance.step == 1)
+                        TutorialManager.Instance.AdvanceStep(); // → Step 2: Scoop
                 }
             }
+
+            // Customer Click
             if (Physics.Raycast(ray, out hit, maxDistance, CustomerMovement.customerLayer))
             {
                 Debug.Log("Clicked on customer " + hit.collider.name);
                 CustomerMovement customer = hit.collider.GetComponent<CustomerMovement>();
-                if(!scooped) // Check if already scooped
+
+                if (!scooped)
                 {
                     RingUp(customer.gameObject);
                 }
+
                 if (customer != null)
                 {
                     GiveCone(customer.gameObject);
-                    ResetScooped(); 
 
+                    if (TutorialManager.Instance.step == 3)
+                        TutorialManager.Instance.AdvanceStep(); // → Step 4: Go to register
+
+                    ResetScooped();
                 }
-                
             }
-
         }
     }
 
     void SpawnCone(GameObject tub)
     {
         string flavor = tub.name.ToLower();
-
-        // Find "Hand With Scooper" -> then find "CreamConeHand(Clone)" in children
         GameObject handRoot = GameObject.Find("CreamConeHand(Clone)");
         if (handRoot == null)
         {
@@ -104,7 +101,6 @@ public class Scooper : MonoBehaviour
         }
 
         Transform coneParent = handRoot.transform.Find("cone/cream" + scoopcount);
-
         if (coneParent == null)
         {
             Debug.LogError("That's the max amount of scoops you can put on the cone, lil bro");
@@ -118,7 +114,7 @@ public class Scooper : MonoBehaviour
         Renderer scoopRenderer = coneParent.GetComponent<Renderer>();
         if (scoopRenderer != null)
         {
-            string cleanedFlavor = ""; // Will store the formatted flavor string
+            string cleanedFlavor = "";
 
             if (flavor.Contains("vanilla")) {
                 scoopRenderer.material = vanillaMat;
@@ -141,7 +137,6 @@ public class Scooper : MonoBehaviour
                 cleanedFlavor = "Blueberry";
             }
 
-            // Add flavor to player stack
             if (!string.IsNullOrEmpty(cleanedFlavor))
             {
                 PlayerStack player = FindFirstObjectByType<PlayerStack>();
@@ -152,96 +147,92 @@ public class Scooper : MonoBehaviour
                 }
             }
         }
-        else{Debug.LogError("Renderer not found on cream");}
+        else
+        {
+            Debug.LogError("Renderer not found on cream");
+        }
     }
-
-
-
 
     public void PickUpCone(GameObject cones)
     {
         Vector3 spawnPosition = transform.position 
-                                  + transform.right * 0.2f
-                                  + transform.up * 1.1f
-                                  + transform.forward * 0.40f; 
+            + transform.right * 0.2f
+            + transform.up * 1.1f
+            + transform.forward * 0.40f;
+
         Instantiate(cone, spawnPosition, transform.rotation, transform.parent);
-        conePickedUp = true; 
-
+        conePickedUp = true;
     }
-    public void GiveCone(GameObject customerObj)
-        {
-            CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
-            
-            
-            if (scooped == true)
-            {
-                customer.MoveToRegister(); // Call the method to make the customer leave
-                Debug.Log("Gave cone to customer!");
 
-                GameObject playerCamObj = GameObject.Find("PlayerCam");
-                if (playerCamObj == null)
-                {
-                    Debug.LogError("PlayerCam not found in scene!");
-                    return;
-                }
+    public void GiveCone(GameObject customerObj)
+    {
+        CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
+
+        if (scooped)
+        {
+            customer.MoveToRegister();
+            Debug.Log("Gave cone to customer!");
+
+            GameObject playerCamObj = GameObject.Find("PlayerCam");
+            if (playerCamObj == null)
+            {
+                Debug.LogError("PlayerCam not found in scene!");
+                return;
+            }
 
             CustomerSpawner spawner = FindFirstObjectByType<CustomerSpawner>();
             if (spawner != null)
             {
                 spawner.customerLine.RemoveAt(0);
-
                 for (int i = 0; i < spawner.customerLine.Count; i++)
                 {
                     spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
                 }
             }
 
-                foreach (Transform child in playerCamObj.transform)
+            foreach (Transform child in playerCamObj.transform)
+            {
+                if (child.CompareTag("Cone"))
                 {
-                    if (child.CompareTag("Cone"))
-                    {
-                        Destroy(child.gameObject);
-                        ResetScooped(); // Reset scooped to allow for new scooping
-                        break;
-                    }
+                    Destroy(child.gameObject);
+                    ResetScooped();
+                    break;
                 }
+            }
 
-                PlayerStack player = FindFirstObjectByType<PlayerStack>();
-                if (player != null) {
-                    player.TrySubmitOrder(); //checks the order and plays sound
-                }
-
+            PlayerStack player = FindFirstObjectByType<PlayerStack>();
+            if (player != null)
+            {
+                player.TrySubmitOrder();
             }
         }
-    
-    public void RingUp(GameObject customerObj){
+    }
+
+    public void RingUp(GameObject customerObj)
+    {
         CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
         if (customer != null)
         {
             customer.Pay();
             MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
-            
-            moneyDisplay.AddMoney(5+price); // Add money to the total
-
-            price = 0; // Base price for a cone
+            moneyDisplay.AddMoney(5 + price);
+            price = 0;
 
             Debug.Log("Customer has paid!");
+
+            if (TutorialManager.Instance.step == 4)
+                TutorialManager.Instance.AdvanceStep(); // → Step 5: Congrats!
         }
         else
         {
-            Debug.LogError("CustomerMovement component not found on the object!");
+            Debug.LogError("CustomerMovement not found!");
         }
-
     }
-            
 
     public void ResetScooped()
     {
         scooped = false;
-        conePickedUp = false; 
-        scoopcount = 1; 
-
+        conePickedUp = false;
+        scoopcount = 1;
     }
-
-
 }
