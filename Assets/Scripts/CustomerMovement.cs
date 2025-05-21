@@ -9,8 +9,8 @@ public class CustomerMovement : MonoBehaviour
 
     public float moveSpeed = 2f;
     private bool hasOrdered = false;
-    private bool hasPayed = false; //has the customer paid?
-    public static LayerMask customerLayer; //layer for customers
+    private bool hasPayed = false; // Has the customer paid?
+    public static LayerMask customerLayer; // Layer for customers
 
     void Awake()
     {
@@ -23,12 +23,15 @@ public class CustomerMovement : MonoBehaviour
             if (registerPoint == null)
                 Debug.LogError("Missing CustomerRegister in scene!");
         }
+
         if (exitPoint == null)
         {
             exitPoint = GameObject.Find("CustomerExit")?.transform;
+            if (exitPoint == null)
+                Debug.LogError("Missing CustomerExit in scene!");
         }
-
     }
+
     private void Update()
     {
         if (hasPayed && exitPoint != null)
@@ -48,7 +51,6 @@ public class CustomerMovement : MonoBehaviour
             MoveTowardsTarget(targetPoint);
         }
     }
-
 
     public void MoveTowardsTarget(Transform destination)
     {
@@ -80,14 +82,13 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-
     public void MoveToRegister()
     {
         hasOrdered = true;
     }
+
     public void Pay()
     {
-
         hasPayed = true;
     }
 
@@ -97,12 +98,18 @@ public class CustomerMovement : MonoBehaviour
         hasOrdered = false;
         hasPayed = false;
     }
+
     public void WalkOut()
-{
-    // Force the customer to skip everything and go to exit
-    hasOrdered = false;
-    hasPayed = true;
-}
+    {
+        if (exitPoint == null)
+        {
+            Debug.LogError($"Customer {gameObject.name} has no exitPoint!");
+            return;
+        }
 
+        Debug.Log($"Customer {gameObject.name} is walking out.");
+        hasOrdered = false;
+        hasPayed = true;
+        targetPoint = exitPoint;
+    }
 }
-
