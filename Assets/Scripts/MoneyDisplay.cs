@@ -36,4 +36,17 @@ public class MoneyDisplay : MonoBehaviour
     {
         moneyText.text = $"${GameManager.Instance.playerMoney:F2}";
     }
+
+    public void UpdateDisplay()
+    {
+        if (GameManager.Instance == null || moneyText == null)
+        {
+            Debug.LogWarning("MoneyDisplay: Missing GameManager or moneyText!");
+            return;
+        }
+
+        moneyText.text = $"${GameManager.Instance.playerMoney:F2}";
+    }
+
+
 }

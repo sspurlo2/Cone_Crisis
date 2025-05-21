@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement; // Add this
 
 public class TutorialManager : MonoBehaviour
 {
@@ -46,6 +47,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 5:
                 ForceMessage("Congrats! Good luck with the game!", 4f);
+                Invoke(nameof(FinishTutorial), 4f); // Wait 4 seconds then start game
                 break;
             default:
                 tutorialText.text = "";
@@ -64,5 +66,11 @@ public class TutorialManager : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         tutorialText.text = "";
+    }
+
+    public void FinishTutorial()
+    {
+        PlayerPrefs.SetInt("tutorialCompleted", 1); // So we can skip it next time
+        SceneManager.LoadScene("Game_scene"); // Replace with your main game scene name
     }
 }

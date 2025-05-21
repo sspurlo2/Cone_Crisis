@@ -11,6 +11,14 @@ public class RestockButtonManager : MonoBehaviour
 
     void Update()
     {
+        // Disable restock logic during tutorial
+        if (GameManager.Instance != null && GameManager.Instance.isTutorial)
+        {
+            restockButton.SetActive(false); // Hide the button
+            holdRestockScript.iceCreamSupply = null; // Clear assigned tub so it doesn't trigger automatic restock
+            return; // Exit early
+        }
+
         bool showButton = false;
         Vector3 tubScreenPosition = Vector3.zero;
 
@@ -28,14 +36,14 @@ public class RestockButtonManager : MonoBehaviour
 
         restockButton.SetActive(showButton);
 
-        // Position the button over the empty tub
         if (showButton)
         {
-            // Slightly nudge the screen position upward
-            tubScreenPosition.y += 50f; // pixels, not world units
-
-
+            tubScreenPosition.y += 50f; // Slight upward nudge in pixels
             restockButton.GetComponent<RectTransform>().position = tubScreenPosition;
+        }
+        else
+        {
+            holdRestockScript.iceCreamSupply = null; // Clear it if nothing is empty
         }
     }
 }

@@ -7,6 +7,8 @@ public class IceCreamSupply : MonoBehaviour
     // Remove the moneyDisplay reference, since you're handling money through GameManager
     // public MoneyDisplay moneyDisplay; // Remove this line
     public bool IsEmpty => currentScoops <= 0; // True when out of scoops
+    public int restockCost = 50;
+
 
     void Start() => currentScoops = maxScoops;
 
@@ -25,17 +27,22 @@ public class IceCreamSupply : MonoBehaviour
     }
 
     // Deduct money and refill scoops
-    public void Restock() {
-        if (CanRestock()) {
-            bool paymentSuccess = SubtractMoney(50f);  // Deduct 50
-            if (paymentSuccess) {
-                currentScoops = maxScoops;
-                Debug.Log("Restocked! Scoops: " + currentScoops);
-            }
-        } else {
-            Debug.Log("Not enough money to restock!");
+    public void Restock()
+    {
+        if (!CanRestock())
+        {
+            Debug.LogWarning("Tried to restock without enough money.");
+            return;
         }
+
+        GameManager.Instance.playerMoney -= restockCost;
+        currentScoops = maxScoops;
+
+        Debug.Log($"{gameObject.name} restocked. -${restockCost}. Player now has ${GameManager.Instance.playerMoney}");
+        FindObjectOfType<MoneyDisplay>().UpdateDisplay(); // if you have such a method
+
     }
+
 
     // Subtract money from the player
     private bool SubtractMoney(float amount) {
