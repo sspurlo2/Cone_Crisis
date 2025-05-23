@@ -208,24 +208,29 @@ public class Scooper : MonoBehaviour
             }
         }
     }
+    public GameObject moneyPopupPrefab; // Assign this in Inspector
+public Transform registerPopupPoint; // Empty GameObject above register
+
     public void RingUp(GameObject customerObj)
     {
         CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
         if (customer != null)
         {
             customer.Pay();
+            int earnedAmount = 5 + price;
 
-            // Only add money if not in the tutorial
             if (!TutorialManager.Instance.isTutorial)
             {
                 MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
-                moneyDisplay.AddMoney(5 + price);
+                moneyDisplay.AddMoney(earnedAmount);
+
+                // Show animated pop-up
+                ShowMoneyPopup(earnedAmount);
             }
 
             price = 0;
             Debug.Log("Customer has paid!");
 
-            // Advance tutorial step if on step 4
             if (TutorialManager.Instance.step == 4)
                 TutorialManager.Instance.AdvanceStep();
         }
@@ -234,6 +239,19 @@ public class Scooper : MonoBehaviour
             Debug.LogError("CustomerMovement not found!");
         }
     }
+
+    private void ShowMoneyPopup(int amount)
+    {
+        GameObject popup = Instantiate(
+            moneyPopupPrefab, 
+            registerPopupPoint.position, 
+            Quaternion.identity, 
+            GameObject.Find("Canvas").transform
+        );
+
+        popup.GetComponent<MoneyPopup>().SetAmount(amount);
+    }
+
 
     
 
