@@ -25,14 +25,18 @@ public class Scooper : MonoBehaviour
             {
                 Debug.Log("Clicked on " + hit.collider.name);
 
-                if (!conePickedUp)
-                {
-                    if (TutorialManager.Instance.step == 1)
-                        TutorialManager.Instance.ForceMessage("Click cone first!");
-                }
+                // Inside the Ice Cream Clicked block
+            if (!conePickedUp)
+            {
+                // Check if the tutorial is at step 1, or handle step 0 if needed
+                if (TutorialManager.Instance.step == 1)
+                    TutorialManager.Instance.ForceMessage("Click cone first!");
+                else if (TutorialManager.Instance.step == 0)
+                    TutorialManager.Instance.AdvanceStep();
+            }
                 else
                 {
-                    if (TutorialManager.Instance.step == 2)
+                    if (TutorialManager.Instance != null && TutorialManager.Instance.step == 2)
                         TutorialManager.Instance.AdvanceStep();
 
                     IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
@@ -204,19 +208,24 @@ public class Scooper : MonoBehaviour
             }
         }
     }
-
     public void RingUp(GameObject customerObj)
     {
         CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
         if (customer != null)
         {
             customer.Pay();
-            MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
-            moneyDisplay.AddMoney(5 + price);
-            price = 0;
 
+            // Only add money if not in the tutorial
+            if (!TutorialManager.Instance.isTutorial)
+            {
+                MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
+                moneyDisplay.AddMoney(5 + price);
+            }
+
+            price = 0;
             Debug.Log("Customer has paid!");
 
+            // Advance tutorial step if on step 4
             if (TutorialManager.Instance.step == 4)
                 TutorialManager.Instance.AdvanceStep();
         }
@@ -225,6 +234,8 @@ public class Scooper : MonoBehaviour
             Debug.LogError("CustomerMovement not found!");
         }
     }
+
+    
 
     public void ResetScooped()
     {

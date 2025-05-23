@@ -9,6 +9,8 @@ public class TutorialManager : MonoBehaviour
     public TMP_Text tutorialText;
     public int step = 0;
 
+    public bool isTutorial = true; // Set to false once tutorial ends
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -32,22 +34,22 @@ public class TutorialManager : MonoBehaviour
         switch (step)
         {
             case 0:
-                tutorialText.text = "Walk to customer";
+                tutorialText.text = "Welcome to your first day! Let's run through a quick tutorial so you can succeed in your posistion!";
                 break;
             case 1:
-                tutorialText.text = "Click on the cone first!";
+                tutorialText.text = "First, Lets start with clicking on the cone.";
                 break;
             case 2:
-                tutorialText.text = "Now scoop the ice cream!";
+                tutorialText.text = "Now, scoop the icecream. Be sure to click the right flavors, so that the customers do not get upset and leave. Note, if you click the wrong flavor, you can throw it away in the trash!";
                 break;
             case 3:
-                tutorialText.text = "Hand cone to customer!";
+                tutorialText.text = "Now, hand the icecream to the customer.";
                 break;
             case 4:
-                tutorialText.text = "Go to register so they pay!";
+                tutorialText.text = "Go to register and click on the customer so they can pay you.";
                 break;
             case 5:
-                ForceMessage("Congrats! Good luck with the game!", 4f);
+                ForceMessage("Congrats, you just served your first icecream cone. Good luck with your shift, you're already a star!", 6f);
                 Invoke(nameof(FinishTutorial), 4f); // Wait 4 seconds then start game
                 break;
             default:
