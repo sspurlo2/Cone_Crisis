@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement; // Add this
+using UnityEngine.SceneManagement;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -23,6 +23,7 @@ public class TutorialManager : MonoBehaviour
     public void AdvanceStep()
     {
         step++;
+        Debug.Log($"[TutorialManager] Step advanced to: {step}");
         ShowStep();
     }
 
@@ -70,7 +71,31 @@ public class TutorialManager : MonoBehaviour
 
     public void FinishTutorial()
     {
-        PlayerPrefs.SetInt("tutorialCompleted", 1); // So we can skip it next time
-        SceneManager.LoadScene("Game_scene"); // Replace with your main game scene name
+        PlayerPrefs.SetInt("tutorialCompleted", 1);
+
+        // Subscribe to scene loaded callback
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // Load main game scene
+        SceneManager.LoadScene("Game_scene");
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        // Wait one frame before accessing UI
+        StartCoroutine(RefreshRestockUIAfterLoad());
+    }
+
+    private System.Collections.IEnumerator RefreshRestockUIAfterLoad()
+    {
+        yield return null; // wait 1 frame
+
+        RestockButtonManager manager = FindFirstObjectByType<RestockButtonManager>();
+        if (manager != null)
+        {
+            manager.UpdateRestockUI(); // ensures proper positioning or hiding
+        }
     }
 }

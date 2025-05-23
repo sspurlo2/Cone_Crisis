@@ -20,40 +20,39 @@ public class Scooper : MonoBehaviour
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            // Ice Cream Click
+            // 1. Ice Cream Clicked
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
 
                 if (!conePickedUp)
                 {
-                    if (TutorialManager.Instance.step <= 2)
-                    {
-                        TutorialManager.Instance.step = 1;
-                        TutorialManager.Instance.ShowStep();
-                        TutorialManager.Instance.ForceMessage("Click on the cone first!");
-                    }
+                    if (TutorialManager.Instance.step == 1)
+                        TutorialManager.Instance.ForceMessage("Click cone first!");
                 }
                 else
                 {
-                    IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
-                    if (supply != null && supply.UseScoop())
-                    {
-                        SpawnCone(hit.collider.gameObject);
-                        if (scoopcount > 2) price += 2;
-                        scooped = true;
+                    if (TutorialManager.Instance.step == 2)
+                        TutorialManager.Instance.AdvanceStep();
 
-                        if (TutorialManager.Instance.step == 2)
-                            TutorialManager.Instance.AdvanceStep(); // → Step 3: Hand to customer
-                    }
-                    else
+                    IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
+                    if (supply != null)
                     {
-                        Debug.Log("No scoops left! Restock required.");
+                        if (supply.UseScoop())
+                        {
+                            SpawnCone(hit.collider.gameObject);
+                            if (scoopcount > 2) price += 2;
+                            scooped = true;
+                        }
+                        else
+                        {
+                            Debug.Log("No scoops left! Restock required.");
+                        }
                     }
                 }
             }
 
-            // Cone Click
+            // 2. Cone Clicked
             if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
@@ -62,11 +61,11 @@ public class Scooper : MonoBehaviour
                     PickUpCone(hit.collider.gameObject);
 
                     if (TutorialManager.Instance.step == 1)
-                        TutorialManager.Instance.AdvanceStep(); // → Step 2: Scoop
+                        TutorialManager.Instance.AdvanceStep();
                 }
             }
 
-            // Customer Click
+            // 3. Customer Clicked
             if (Physics.Raycast(ray, out hit, maxDistance, CustomerMovement.customerLayer))
             {
                 Debug.Log("Clicked on customer " + hit.collider.name);
@@ -82,9 +81,7 @@ public class Scooper : MonoBehaviour
                     GiveCone(customer.gameObject);
 
                     if (TutorialManager.Instance.step == 3)
-                        TutorialManager.Instance.AdvanceStep(); // → Step 4: Go to register
-
-                    ResetScooped();
+                        TutorialManager.Instance.AdvanceStep();
                 }
             }
         }
@@ -176,7 +173,7 @@ public class Scooper : MonoBehaviour
             GameObject playerCamObj = GameObject.Find("PlayerCam");
             if (playerCamObj == null)
             {
-                Debug.LogError("PlayerCam not found in scene!");
+                Debug.LogError("PlayerCam not found!");
                 return;
             }
 
@@ -221,7 +218,7 @@ public class Scooper : MonoBehaviour
             Debug.Log("Customer has paid!");
 
             if (TutorialManager.Instance.step == 4)
-                TutorialManager.Instance.AdvanceStep(); // → Step 5: Congrats!
+                TutorialManager.Instance.AdvanceStep();
         }
         else
         {

@@ -7,10 +7,44 @@ public class RestockButtonManager : MonoBehaviour
     public MoneyDisplay moneyDisplay;
     public GameObject restockButton;
     public HoldRestockUI holdRestockScript;
-    public Camera mainCamera; // Assign your main camera (e.g., Player's camera)
+    public Camera mainCamera;
+
+    private bool initialized = false;
+
+    void Start()
+    {
+        if (restockButton != null)
+        {
+            restockButton.SetActive(false); // Hide it early
+        }
+
+        // Start the update a little delayed to make sure scene is ready
+        Invoke(nameof(InitAfterSceneLoad), 0.1f);
+    }
 
     void Update()
     {
+        if (initialized)
+        {
+            UpdateRestockUI();
+        }
+    }
+
+    private void InitAfterSceneLoad()
+    {
+        initialized = true;
+        UpdateRestockUI(); // Force initial check
+    }
+
+    public void UpdateRestockUI()
+    {
+        if (TutorialManager.Instance != null && TutorialManager.Instance.step < 5)
+        {
+            if (restockButton != null)
+                restockButton.SetActive(false);
+            return;
+        }
+
         bool showButton = false;
         Vector3 tubScreenPosition = Vector3.zero;
 
@@ -18,24 +52,22 @@ public class RestockButtonManager : MonoBehaviour
         {
             if (supply.IsEmpty && moneyDisplay.CanAfford(50))
             {
-                // Get the tub's world position and convert to screen space
                 tubScreenPosition = mainCamera.WorldToScreenPoint(supply.transform.position);
                 holdRestockScript.iceCreamSupply = supply;
                 showButton = true;
-                break; // Prioritize the first empty tub
+                break;
             }
         }
 
-        restockButton.SetActive(showButton);
-
-        // Position the button over the empty tub
-        if (showButton)
+        if (restockButton != null)
         {
-            // Slightly nudge the screen position upward
-            tubScreenPosition.y += 50f; // pixels, not world units
+            restockButton.SetActive(showButton);
 
-
-            restockButton.GetComponent<RectTransform>().position = tubScreenPosition;
+            if (showButton)
+            {
+                tubScreenPosition.y += 50f;
+                restockButton.GetComponent<RectTransform>().position = tubScreenPosition;
+            }
         }
     }
 }
