@@ -11,6 +11,7 @@ public class CustomerMovement : MonoBehaviour
     private bool hasOrdered = false;
     private bool hasPayed = false; // Has the customer paid?
     public static LayerMask customerLayer; // Layer for customers
+    public bool isAtRegister = false; // NEW: Tracks if at register
 
     void Awake()
     {
@@ -45,6 +46,16 @@ public class CustomerMovement : MonoBehaviour
         else if (hasOrdered && registerPoint != null)
         {
             MoveTowardsTarget(registerPoint);
+
+            // NEW: Check if at register
+            if (Vector3.Distance(transform.position, registerPoint.position) < 0.2f)
+            {
+                isAtRegister = true;
+            }
+            else
+            {
+                isAtRegister = false;
+            }
         }
         else if (targetPoint != null)
         {
@@ -97,6 +108,7 @@ public class CustomerMovement : MonoBehaviour
         targetPoint = target;
         hasOrdered = false;
         hasPayed = false;
+        isAtRegister = false;
     }
 
     public void WalkOut()
@@ -111,5 +123,6 @@ public class CustomerMovement : MonoBehaviour
         hasOrdered = false;
         hasPayed = true;
         targetPoint = exitPoint;
+        isAtRegister = false;
     }
 }

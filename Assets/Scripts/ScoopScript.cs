@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class Scooper : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Scooper : MonoBehaviour
     public GameObject cone;
     private bool scooped = false;
     private bool conePickedUp = false;
+    private bool hasConeBeenGiven = false; // NEW
     public Material blueberryMat, chocolateMat, mangoMat, strawberryMat, vanillaMat;
     private int scoopcount = 1;
     private int price = 0;
@@ -25,15 +27,13 @@ public class Scooper : MonoBehaviour
             {
                 Debug.Log("Clicked on " + hit.collider.name);
 
-                // Inside the Ice Cream Clicked block
-            if (!conePickedUp)
-            {
-                // Check if the tutorial is at step 1, or handle step 0 if needed
-                if (TutorialManager.Instance.step == 1)
-                    TutorialManager.Instance.ForceMessage("Click cone first!");
-                else if (TutorialManager.Instance.step == 0)
-                    TutorialManager.Instance.AdvanceStep();
-            }
+                if (!conePickedUp)
+                {
+                    if (TutorialManager.Instance.step == 1)
+                        TutorialManager.Instance.ForceMessage("Click cone first!");
+                    else if (TutorialManager.Instance.step == 0)
+                        TutorialManager.Instance.AdvanceStep();
+                }
                 else
                 {
                     if (TutorialManager.Instance != null && TutorialManager.Instance.step == 2)
@@ -75,17 +75,21 @@ public class Scooper : MonoBehaviour
                 Debug.Log("Clicked on customer " + hit.collider.name);
                 CustomerMovement customer = hit.collider.GetComponent<CustomerMovement>();
 
-                if (!scooped)
-                {
-                    RingUp(customer.gameObject);
-                }
-
                 if (customer != null)
                 {
-                    GiveCone(customer.gameObject);
-
-                    if (TutorialManager.Instance.step == 3)
-                        TutorialManager.Instance.AdvanceStep();
+                    if (customer.isAtRegister && hasConeBeenGiven)
+                    {
+                        RingUp(customer.gameObject); // 💰 Pay only after cone given + at register
+                    }
+                    else if (scooped && !hasConeBeenGiven)
+                    {
+                        GiveCone(customer.gameObject); // 🍦 Give cone and move to register
+                        hasConeBeenGiven = true;
+                    }
+                    else if (!scooped)
+                    {
+                        Debug.Log("Make a cone first!");
+                    }
                 }
             }
         }
@@ -156,7 +160,7 @@ public class Scooper : MonoBehaviour
 
     public void PickUpCone(GameObject cones)
     {
-        Vector3 spawnPosition = transform.position 
+        Vector3 spawnPosition = transform.position
             + transform.right * 0.2f
             + transform.up * 1.1f
             + transform.forward * 0.40f;
@@ -208,8 +212,6 @@ public class Scooper : MonoBehaviour
             }
         }
     }
-    public GameObject moneyPopupPrefab; // Assign this in Inspector
-public Transform registerPopupPoint; // Empty GameObject above register
 
     public void RingUp(GameObject customerObj)
     {
@@ -217,48 +219,32 @@ public Transform registerPopupPoint; // Empty GameObject above register
         if (customer != null)
         {
             customer.Pay();
-            int earnedAmount = 5 + price;
+            float earnedAmount = 5f + price;
 
-            if (!TutorialManager.Instance.isTutorial)
+            if (TutorialManager.Instance == null || !TutorialManager.Instance.isTutorial)
             {
                 MoneyDisplay moneyDisplay = FindFirstObjectByType<MoneyDisplay>();
-                moneyDisplay.AddMoney(earnedAmount);
-
-                // Show animated pop-up
-                ShowMoneyPopup(earnedAmount);
+                if (moneyDisplay != null)
+                {
+                    moneyDisplay.AddMoney(earnedAmount);
+                    Debug.Log("Earned Amount: " + earnedAmount);
+                }
+                else
+                {
+                    Debug.LogError("MoneyDisplay reference missing!");
+                }
             }
 
             price = 0;
             Debug.Log("Customer has paid!");
-
-            if (TutorialManager.Instance.step == 4)
-                TutorialManager.Instance.AdvanceStep();
-        }
-        else
-        {
-            Debug.LogError("CustomerMovement not found!");
         }
     }
-
-    private void ShowMoneyPopup(int amount)
-    {
-        GameObject popup = Instantiate(
-            moneyPopupPrefab, 
-            registerPopupPoint.position, 
-            Quaternion.identity, 
-            GameObject.Find("Canvas").transform
-        );
-
-        popup.GetComponent<MoneyPopup>().SetAmount(amount);
-    }
-
-
-    
 
     public void ResetScooped()
     {
         scooped = false;
         conePickedUp = false;
         scoopcount = 1;
+        hasConeBeenGiven = false; // RESET THIS TOO
     }
 }
