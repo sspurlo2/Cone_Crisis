@@ -27,11 +27,11 @@ public class PlayerStack : MonoBehaviour {
 
         bool isCorrect = currentOrder.CheckOrder(playerFlavors);
 
-        if (isCorrect) {
+        if (isCorrect)
+        {
             Debug.Log("Order correct!");
             playerFlavors.Clear();
 
-            FindObjectOfType<StarRatingDisplay>().IncreaseRating(1f);
             //rating system, increase by 1 star for correct order
 
             if (correctOrderClips.Length > 0)
@@ -42,12 +42,15 @@ public class PlayerStack : MonoBehaviour {
 
             currentOrder.currentCustomer.MoveToRegister();
             currentOrder.receiptCube.SetActive(false);
-        }
-        else {
-            Debug.Log("Incorrect order!");
-            FindObjectOfType<StarRatingDisplay>().IncreaseRating(-0.5f); // or -1f if you prefer
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(1f);
 
-            if (incorrectOrderClips.Length > 0){
+        }
+        else
+        {
+            Debug.Log("Incorrect order!");
+
+            if (incorrectOrderClips.Length > 0)
+            {
                 AudioClip randomClip = incorrectOrderClips[Random.Range(0, incorrectOrderClips.Length)];
                 audioSource.PlayOneShot(randomClip);
             }
@@ -55,6 +58,8 @@ public class PlayerStack : MonoBehaviour {
             // have the customer leave (but no reward)
             currentOrder.currentCustomer.Pay();
             currentOrder.receiptCube.SetActive(false);
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(-0.5f);
+
         }
 
         return isCorrect;
