@@ -31,7 +31,11 @@ public class PlayerStack : MonoBehaviour {
             Debug.Log("Order correct!");
             playerFlavors.Clear();
 
-            if (correctOrderClips.Length > 0){
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(1f);
+            //rating system, increase by 1 star for correct order
+
+            if (correctOrderClips.Length > 0)
+            {
                 AudioClip randomClip = correctOrderClips[Random.Range(0, correctOrderClips.Length)];
                 audioSource.PlayOneShot(randomClip);
             }
@@ -41,6 +45,7 @@ public class PlayerStack : MonoBehaviour {
         }
         else {
             Debug.Log("Incorrect order!");
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(-0.5f); // or -1f if you prefer
 
             if (incorrectOrderClips.Length > 0){
                 AudioClip randomClip = incorrectOrderClips[Random.Range(0, incorrectOrderClips.Length)];
