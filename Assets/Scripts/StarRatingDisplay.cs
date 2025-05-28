@@ -30,6 +30,11 @@ public class StarRatingDisplay : MonoBehaviour
         }
     }
 
+    public float GetRating()
+    {
+        return rating;
+    }
+
     // Optional: reset for new day or level
     public void ResetRating()
     {

@@ -40,13 +40,26 @@ public class DayManager : MonoBehaviour
             float moneyAtEnd = GameManager.Instance.playerMoney;
             Debug.Log($"Day {currentDay} - Ending Money: ${moneyAtEnd}");
 
-            // Calculate how much was earned during the day
             float earnedToday = moneyAtEnd - moneyAtStart;
-            totalEarnings += earnedToday;
 
-            // Display the end of day message with earned and total money
-            announcementText.text = $"Day {currentDay} over!\nYou made ${earnedToday:F2} today.\nTotal: ${totalEarnings:F2}";
+            // Get the star rating and tip percentage
+            float starRating = FindObjectOfType<StarRatingDisplay>().GetRating(); 
+            float tipPercent = Mathf.Lerp(0.10f, 0.50f, starRating / 5f);
+            float tips = earnedToday * tipPercent;
 
+            // Add tips to earnings for display and for total tracking
+            float totalToday = earnedToday + tips;
+            totalEarnings += totalToday;
+            
+
+            // Show breakdown in the announcement
+            announcementText.text = $"Day {currentDay} over!\n" +
+                $"Base: ${earnedToday:F2}\n" +
+                $"Tips: ${tips:F2}\n" +
+                $"Total: ${totalToday:F2}\n" +
+                $"Overall: ${totalEarnings:F2}\n" +
+                $"Star Rating: {starRating:F1} stars";
+            FindObjectOfType<MoneyDisplay>().AddMoney(tips); // Update the money display
             // Fade in the announcement message
             yield return StartCoroutine(FadeInAnnouncement());
             MakeAllCustomersLeave();
