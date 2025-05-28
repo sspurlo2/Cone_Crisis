@@ -5,19 +5,17 @@ using System.Collections.Generic;
 public class CustomerSpawner : MonoBehaviour {
     public GameObject customerPrefab; 
     public Transform spawnPoint;
-    public Transform targetPoint;
-    public Transform exitPoint;
+    public List<Transform> queuePositions; 
     public float timeBetweenSpawns = 20f;
     public int maxCustomers = 20;
     public List<CustomerMovement> customerLine = new List<CustomerMovement>();
     private int customersSpawned = 0;
-    public List<Transform> queuePositions; 
 
-    void Start() {
+    public void Start() {
         StartCoroutine(SpawnCustomers());
     }
 
-    IEnumerator SpawnCustomers() {
+    public IEnumerator SpawnCustomers() {
         while (customersSpawned < maxCustomers) {
             SpawnCustomer();
             customersSpawned++;
@@ -25,27 +23,28 @@ public class CustomerSpawner : MonoBehaviour {
         }
     }
 
+    public void ResetSpawner()
+    {
+        StopAllCoroutines(); // In case previous spawns are still pending
+        customersSpawned = 0;
+        customerLine.Clear(); // Clear list to avoid leftover references
+        StartCoroutine(SpawnCustomers());
+    }
+
+
     void SpawnCustomer() {
+        if (customerLine.Count >= queuePositions.Count) {
+            Debug.LogWarning("No more queue spots left!");
+            return;
+        }
+
         GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
         CustomerMovement moveScript = newCustomer.GetComponent<CustomerMovement>();
 
         if (moveScript != null) {
-            int index = customerLine.Count;
-            Transform target;
-
-            if (index < queuePositions.Count) {
-                target = queuePositions[index];
-            } else {
-                // Create a new waiting position further back
-                Vector3 newPos = queuePositions[queuePositions.Count - 1].position + new Vector3(0, 0, (index - queuePositions.Count + 1) * 1.5f);
-                GameObject tempTarget = new GameObject("ExtraQueueSpot_" + index);
-                tempTarget.transform.position = newPos;
-                target = tempTarget.transform;
-            }
-
-            moveScript.targetPoint = target;
+            int nextSpotIndex = customerLine.Count;
+            moveScript.targetPoint = queuePositions[nextSpotIndex];
             customerLine.Add(moveScript);
-            Debug.Log($"Spawned customer #{index} at {target.position}");
         }
     }
 }

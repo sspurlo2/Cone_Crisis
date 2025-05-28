@@ -108,8 +108,8 @@ public class CustomerMovement : MonoBehaviour
         targetPoint = target;
         hasOrdered = false;
         hasPayed = false;
-        isAtRegister = false;
     }
+
 
     public void WalkOut()
     {
