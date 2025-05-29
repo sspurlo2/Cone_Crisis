@@ -31,7 +31,7 @@ public class Scooper : MonoBehaviour
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, maxDistance, iceCreamLayer))
-        {
+            {
             Debug.Log("Clicked on " + hit.collider.name);
             if (conePickedUp == true)
             {
@@ -62,7 +62,7 @@ public class Scooper : MonoBehaviour
             {
                 Debug.Log("Cannot scoop: Already scooped or no cone picked up.");
             }
-        }
+            }
             if (Physics.Raycast(ray, out hit, maxDistance, coneLayer))
             {
                 Debug.Log("Clicked on " + hit.collider.name);
@@ -75,15 +75,20 @@ public class Scooper : MonoBehaviour
             {
                 Debug.Log("Clicked on customer " + hit.collider.name);
                 CustomerMovement customer = hit.collider.GetComponent<CustomerMovement>();
-                if(!scooped) // Check if already scooped
+                if(!scooped && customer.AtRegister()) // Check if already scooped
                 {
                     RingUp(customer.gameObject);
                 }
                 if (customer != null)
                 {
-                    GiveCone(customer.gameObject);
-                    ResetScooped(); 
-
+                    if (!scooped) 
+                    {
+                        customer.WalkOut(); 
+                    }
+                    else
+                    {
+                        GiveCone(customer.gameObject);
+                    }
                 }
                 
             }
