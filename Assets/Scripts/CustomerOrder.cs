@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using TMPro; 
+using TMPro;
 
 public class CustomerOrder : MonoBehaviour {
     //public Text orderText; //assign in inspector
     public GameObject receiptCube; //receipt cube in unity
-    public TextMeshPro receiptText; 
+    public TextMeshPro receiptText;
     public List<string> flavorOrder = new List<string>();
     public CustomerMovement currentCustomer; // store customer who ordered
 
@@ -28,8 +28,16 @@ public class CustomerOrder : MonoBehaviour {
             if (playerStack != null) {
                 playerStack.currentOrder = this;
             }
+
+            // ✅ Start timer here
+            WorldSpaceTimer timer = FindObjectOfType<WorldSpaceTimer>();
+            if (timer != null)
+            {
+                timer.StartTimerForCustomer(other.gameObject);
+            }
         }
     }
+
 
     void GenerateOrder() {
         flavorOrder.Clear();

@@ -36,7 +36,7 @@ public class PlayerStack : MonoBehaviour
 
         if (isCorrect)
         {
-            Debug.Log("✅ Order correct!");
+            Debug.Log("Order correct!");
             PlayRandomClip(correctOrderClips);
 
             playerFlavors.Clear();
@@ -47,7 +47,7 @@ public class PlayerStack : MonoBehaviour
         }
         else
         {
-            Debug.Log("❌ Incorrect order!");
+            Debug.Log("Incorrect order!");
             PlayRandomClip(incorrectOrderClips);
 
             playerFlavors.Clear(); // Optional: You may or may not clear stack on failure
@@ -67,7 +67,7 @@ public class PlayerStack : MonoBehaviour
 
         if (spawner.customerLine.Count > 0)
         {
-            spawner.customerLine.RemoveAt(0); // Remove the one who just moved
+            spawner.customerLine.RemoveAt(0);
 
             for (int i = 0; i < spawner.customerLine.Count; i++)
             {
@@ -78,6 +78,8 @@ public class PlayerStack : MonoBehaviour
             }
         }
     }
+
+
 
     void PlayRandomClip(AudioClip[] clipArray)
     {
