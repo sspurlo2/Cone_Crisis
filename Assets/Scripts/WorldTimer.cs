@@ -60,6 +60,7 @@ public class WorldSpaceTimer : MonoBehaviour
                 if (cm != null)
                 {
                     cm.WalkOut();
+                    FindObjectOfType<StarRatingDisplay>().IncreaseRating(-0.5f);
                 }
             }
 

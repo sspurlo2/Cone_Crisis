@@ -81,13 +81,15 @@ public class Scooper : MonoBehaviour
                 }
                 if (customer != null)
                 {
-                    if (!scooped) 
+                    if (!scooped)
                     {
-                        customer.WalkOut(); 
+                        customer.WalkOut();
                     }
                     else
                     {
                         GiveCone(customer.gameObject);
+                        WorldSpaceTimer timer = FindObjectOfType<WorldSpaceTimer>();
+                        timer.StopTimer(); // stop timer when giving cone instead of when they walk out
                     }
                 }
                 
