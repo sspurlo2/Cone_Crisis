@@ -160,30 +160,37 @@ public class Scooper : MonoBehaviour
 
     public void PickUpCone(GameObject cones)
     {
-        Vector3 spawnPosition = transform.position 
+        Vector3 spawnPosition = transform.position
                                   + transform.right * 0.2f
                                   + transform.up * 1.1f
-                                  + transform.forward * 0.40f; 
+                                  + transform.forward * 0.40f;
         Instantiate(cone, spawnPosition, transform.rotation, transform.parent);
         conePickedUp = true; 
+        
+            if (TutorialManager.Instance != null && TutorialManager.Instance.step == 1)
+    {
+        TutorialManager.Instance.AdvanceStep();
+    }
 
     }
     public void GiveCone(GameObject customerObj)
         {
             CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
-            
-            
-            if (scooped == true)
-            {
-                customer.MoveToRegister(); // Call the method to make the customer leave
-                Debug.Log("Gave cone to customer!");
 
-                GameObject playerCamObj = GameObject.Find("PlayerCam");
-                if (playerCamObj == null)
-                {
-                    Debug.LogError("PlayerCam not found in scene!");
-                    return;
-                }
+
+        if (scooped == true)
+        {
+            Debug.Log("GiveCone() reached. Scooped is true.");
+
+            customer.MoveToRegister(); // Call the method to make the customer leave
+            Debug.Log("Gave cone to customer!");
+
+            GameObject playerCamObj = GameObject.Find("PlayerCam");
+            if (playerCamObj == null)
+            {
+                Debug.LogError("PlayerCam not found in scene!");
+                return;
+            }
 
             CustomerSpawner spawner = FindFirstObjectByType<CustomerSpawner>();
             if (spawner != null)
@@ -196,20 +203,25 @@ public class Scooper : MonoBehaviour
                 }
             }
 
-                foreach (Transform child in playerCamObj.transform)
+            foreach (Transform child in playerCamObj.transform)
+            {
+                if (child.CompareTag("Cone"))
                 {
-                    if (child.CompareTag("Cone"))
-                    {
-                        Destroy(child.gameObject);
-                        ResetScooped(); // Reset scooped to allow for new scooping
-                        break;
-                    }
+                    Destroy(child.gameObject);
+                    ResetScooped(); // Reset scooped to allow for new scooping
+                    break;
                 }
+            }
 
-                PlayerStack player = FindFirstObjectByType<PlayerStack>();
-                if (player != null) {
-                    player.TrySubmitOrder(); //checks the order and plays sound
-                }
+            PlayerStack player = FindFirstObjectByType<PlayerStack>();
+            if (player != null)
+            {
+                player.TrySubmitOrder(); //checks the order and plays sound
+            }
+             if (TutorialManager.Instance != null && TutorialManager.Instance.step == 3)
+            {
+                TutorialManager.Instance.AdvanceStep();
+            }
 
             }
         }
