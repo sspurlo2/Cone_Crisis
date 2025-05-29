@@ -1,67 +1,80 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using TMPro;
+using System.Collections.Generic;
 
-public class CustomerOrder : MonoBehaviour {
-    //public Text orderText; //assign in inspector
-    public GameObject receiptCube; //receipt cube in unity
+public class CustomerOrder : MonoBehaviour
+{
+    public GameObject receiptCube;
     public TextMeshPro receiptText;
     public List<string> flavorOrder = new List<string>();
-    public CustomerMovement currentCustomer; // store customer who ordered
+    public CustomerMovement currentCustomer;
 
-
-    private void Start() {
-        //receiptCube.SetActive(false); //hide receipt at start
+    private void Start()
+    {
         receiptText.text = "waiting for order...";
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Customer")) {
-            Debug.Log("Customer entered trigger");
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Customer"))
+        {
+            Debug.Log("Customer entered order zone");
+
+            currentCustomer = other.GetComponent<CustomerMovement>();
+            if (currentCustomer == null) return;
+
             receiptCube.SetActive(true);
             GenerateOrder();
             DisplayOrder();
-            currentCustomer = other.GetComponent<CustomerMovement>();
 
+            // Register this order with the player stack (optional)
             PlayerStack playerStack = FindFirstObjectByType<PlayerStack>();
-            if (playerStack != null) {
+            if (playerStack != null)
+            {
                 playerStack.currentOrder = this;
             }
 
-            // ✅ Start timer here
+            // Start the countdown timer for this customer
             WorldSpaceTimer timer = FindObjectOfType<WorldSpaceTimer>();
             if (timer != null)
             {
-                timer.StartTimerForCustomer(other.gameObject);
+                timer.StartTimerForCustomer(other.gameObject); // assign & start
             }
         }
     }
 
-
-    void GenerateOrder() {
+    void GenerateOrder()
+    {
         flavorOrder.Clear();
-        string[] flavors = { "Strawberry", "Vanilla", "Chocolate", "Blueberry", "Mango"}; //flavor options
-        int numScoops = Random.Range(1, 4); //rangeee 1-3 scoops bc min is inclusive max is exclusive
-        for (int i = 0; i < numScoops; i++) {
-            string randomFlavor = flavors[Random.Range(0, flavors.Length)]; //only one flavor for tutorial
+        string[] flavors = { "Strawberry", "Vanilla", "Chocolate", "Blueberry", "Mango" };
+        int numScoops = Random.Range(1, 4);
+
+        for (int i = 0; i < numScoops; i++)
+        {
+            string randomFlavor = flavors[Random.Range(0, flavors.Length)];
             flavorOrder.Add(randomFlavor);
-        }  
+        }
     }
 
-    void DisplayOrder() {
+    void DisplayOrder()
+    {
         receiptText.text = "Order:\n";
-        for (int i = 0; i < flavorOrder.Count; i++) {
+        for (int i = 0; i < flavorOrder.Count; i++)
+        {
             receiptText.text += $"Scoop {i + 1}: {flavorOrder[i]}\n";
         }
     }
 
-    public bool CheckOrder(List<string> playerStack) { //checks if order matches players stack
+    public bool CheckOrder(List<string> playerStack)
+    {
         if (playerStack.Count != flavorOrder.Count) return false;
-        for (int i = 0; i < flavorOrder.Count; i++) {
+
+        for (int i = 0; i < flavorOrder.Count; i++)
+        {
             if (playerStack[i] != flavorOrder[i]) return false;
         }
-        return true;
 
+        return true;
     }
 }

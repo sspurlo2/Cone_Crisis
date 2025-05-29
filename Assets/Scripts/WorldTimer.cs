@@ -1,18 +1,27 @@
 using UnityEngine;
+using UnityEngine.Events;
+using TMPro;
 
 public class WorldSpaceTimer : MonoBehaviour
 {
-    [Header("Timer Settings")]
+    [Header("Countdown Settings")]
     public float totalTime = 10f;
 
-    [Header("Visuals")]
-    public SpriteRenderer ringSprite; // Assign your circular dial sprite here
+    [Header("Visual Elements")]
+    public SpriteRenderer ringSprite; // The visual ring
+    public TextMeshProUGUI countdownText; // Countdown label
 
-    [Header("Optional Customer Logic")]
-    public GameObject customerToNotify; // Optional: to trigger walkout
+    [Header("Customer Logic")]
+    public GameObject customerToNotify; // Assigned per customer
+    public UnityEvent onTimerEnd; // Optional Unity event
 
     private float timeLeft;
     private bool isRunning = false;
+
+    void Start()
+    {
+        ResetTimer(); // Optional: for testing
+    }
 
     void Update()
     {
@@ -20,21 +29,31 @@ public class WorldSpaceTimer : MonoBehaviour
 
         timeLeft -= Time.deltaTime;
 
-        // Update dial scale
+        // Update visual scale
         float fraction = Mathf.Clamp01(timeLeft / totalTime);
         if (ringSprite != null)
             ringSprite.transform.localScale = Vector3.one * fraction;
 
-        // Timer finished
+        // Update countdown text
+        if (countdownText != null)
+        {
+            int secondsRemaining = Mathf.CeilToInt(timeLeft);
+            countdownText.text = secondsRemaining.ToString();
+        }
+
+        // Check for timeout
         if (timeLeft <= 0f)
         {
             isRunning = false;
             if (ringSprite != null)
                 ringSprite.transform.localScale = Vector3.zero;
 
-            Debug.Log("⏰ Timer finished!");
+            if (countdownText != null)
+                countdownText.text = "0";
 
-            // Optional: auto walk out customer
+            Debug.Log("⏰ Timer finished!");
+            onTimerEnd.Invoke();
+
             if (customerToNotify != null)
             {
                 CustomerMovement cm = customerToNotify.GetComponent<CustomerMovement>();
@@ -43,10 +62,16 @@ public class WorldSpaceTimer : MonoBehaviour
                     cm.WalkOut();
                 }
             }
+
+            // Move next customer forward
+            PlayerStack playerStack = FindObjectOfType<PlayerStack>();
+            if (playerStack != null)
+            {
+                playerStack.MoveNextCustomerInLine();
+            }
         }
     }
 
-    // 🔁 Start the timer fresh, linked to a customer (optional)
     public void StartTimerForCustomer(GameObject customer)
     {
         customerToNotify = customer;
@@ -54,7 +79,6 @@ public class WorldSpaceTimer : MonoBehaviour
         StartTimer();
     }
 
-    // Start without customer logic
     public void StartTimer()
     {
         timeLeft = totalTime;
@@ -62,6 +86,9 @@ public class WorldSpaceTimer : MonoBehaviour
 
         if (ringSprite != null)
             ringSprite.transform.localScale = Vector3.one;
+
+        if (countdownText != null)
+            countdownText.text = Mathf.CeilToInt(totalTime).ToString();
     }
 
     public void StopTimer()
@@ -72,7 +99,11 @@ public class WorldSpaceTimer : MonoBehaviour
     public void ResetTimer()
     {
         timeLeft = totalTime;
+
         if (ringSprite != null)
             ringSprite.transform.localScale = Vector3.one;
+
+        if (countdownText != null)
+            countdownText.text = Mathf.CeilToInt(totalTime).ToString();
     }
 }

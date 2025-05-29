@@ -60,7 +60,7 @@ public class PlayerStack : MonoBehaviour
         return isCorrect;
     }
 
-    void MoveNextCustomerInLine()
+    public void MoveNextCustomerInLine()
     {
         CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
         if (spawner == null) return;

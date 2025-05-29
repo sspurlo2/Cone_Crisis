@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class CustomerMovement : MonoBehaviour
 {
@@ -9,14 +8,14 @@ public class CustomerMovement : MonoBehaviour
 
     public float moveSpeed = 2f;
     private bool hasOrdered = false;
-    private bool hasPayed = false; // Has the customer paid?
-    public static LayerMask customerLayer; // Layer for customers
-    public bool isAtRegister = false; // NEW: Tracks if at register
+    private bool hasPayed = false;
+    public bool isAtRegister = false;
+
+    public static LayerMask customerLayer;
 
     void Awake()
     {
-        // Only runs once when object loads
-        customerLayer = LayerMask.GetMask("customerLayer"); // Set your customer layer in Unity tags/layers
+        customerLayer = LayerMask.GetMask("customerLayer");
 
         if (registerPoint == null)
         {
@@ -33,29 +32,20 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
         if (hasPayed && exitPoint != null)
         {
             MoveTowardsTarget(exitPoint);
             if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f)
             {
-                Destroy(gameObject);
+                Destroy(gameObject); // Customer leaves
             }
         }
         else if (hasOrdered && registerPoint != null)
         {
             MoveTowardsTarget(registerPoint);
-
-            // NEW: Check if at register
-            if (Vector3.Distance(transform.position, registerPoint.position) < 0.2f)
-            {
-                isAtRegister = true;
-            }
-            else
-            {
-                isAtRegister = false;
-            }
+            isAtRegister = Vector3.Distance(transform.position, registerPoint.position) < 0.2f;
         }
         else if (targetPoint != null)
         {
@@ -63,30 +53,11 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-    public void MoveTowardsTarget(Transform destination)
+    void MoveTowardsTarget(Transform destination)
     {
         transform.position = Vector3.MoveTowards(transform.position, destination.position, moveSpeed * Time.deltaTime);
 
-        Vector3 direction;
-
-        if (destination == registerPoint)
-        {
-            // Always face the player when at register
-            GameObject playerCam = GameObject.Find("PlayerCam");
-            if (playerCam != null)
-            {
-                direction = (playerCam.transform.position - transform.position).normalized;
-            }
-            else
-            {
-                direction = (destination.position - transform.position).normalized;
-            }
-        }
-        else
-        {
-            direction = (destination.position - transform.position).normalized;
-        }
-
+        Vector3 direction = (destination.position - transform.position).normalized;
         if (direction != Vector3.zero)
         {
             transform.forward = direction;
@@ -109,7 +80,6 @@ public class CustomerMovement : MonoBehaviour
         hasOrdered = false;
         hasPayed = false;
     }
-
 
     public void WalkOut()
     {
