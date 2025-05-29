@@ -42,6 +42,7 @@ public class PlayerStack : MonoBehaviour
             playerFlavors.Clear();
             currentOrder.receiptCube.SetActive(false);
             currentOrder.currentCustomer.MoveToRegister(); // Customer goes to pay
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(1f);
 
             MoveNextCustomerInLine();
         }
@@ -53,6 +54,7 @@ public class PlayerStack : MonoBehaviour
             playerFlavors.Clear(); // Optional: You may or may not clear stack on failure
             currentOrder.receiptCube.SetActive(false);
             currentOrder.currentCustomer.Pay(); // Customer just walks out
+            FindObjectOfType<StarRatingDisplay>().IncreaseRating(.5f);
 
             MoveNextCustomerInLine();
         }
