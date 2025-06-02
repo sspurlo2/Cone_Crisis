@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps GameManager between scenes
+            // DontDestroyOnLoad(gameObject); // Keeps GameManager between scenes
         }
         else
         {
