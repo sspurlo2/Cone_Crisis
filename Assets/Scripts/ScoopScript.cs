@@ -84,6 +84,8 @@ public class Scooper : MonoBehaviour
                     if (!scooped)
                     {
                         customer.WalkOut();
+                        FindObjectOfType<StarRatingDisplay>().IncreaseRating(-.5f);
+
                     }
                     else
                     {
