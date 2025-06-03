@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class DayManager : MonoBehaviour
 {
@@ -13,12 +15,56 @@ public class DayManager : MonoBehaviour
     public float fadeDuration = 1.5f;
     public Image FadeImage;
 
+    [Header("Lighting")]
+    public Light directionalLight;
+    public Gradient lightColorOverTime;
+    public AnimationCurve lightIntensityOverTime;
+    public GameObject[] nightLights; // optional for street lamps, signs, etc.
+
+    [Range(0f, 1f)]
+    public float dayProgress = 0f; // 0 = morning, 1 = night
+
+    private float timer = 0f;
+    private float dayLength;
     private int currentDay = 1;
     private float totalEarnings = 0f;
 
     void Start()
     {
+        dayLength = dayDuration;
         StartCoroutine(DayCycle());
+    }
+
+    void Update()
+    {
+        timer += Time.deltaTime;
+        dayProgress = timer / dayLength;
+
+        UpdateLighting(dayProgress);
+    }
+
+    void UpdateLighting(float progress)
+    {
+        if (directionalLight != null)
+        {
+            directionalLight.color = lightColorOverTime.Evaluate(progress);
+            directionalLight.intensity = lightIntensityOverTime.Evaluate(progress);
+            directionalLight.transform.rotation = Quaternion.Euler(
+                Mathf.Lerp(60f, -20f, progress), // Sun height
+                Mathf.Lerp(-30f, 30f, progress), // Sun arc
+                0f
+            );
+        }
+
+        RenderSettings.ambientIntensity = Mathf.Lerp(1f, 0.2f, progress);
+
+        // Optional: enable night lights
+        bool isNight = progress > 0.7f;
+        foreach (GameObject light in nightLights)
+        {
+            if (light != null)
+                light.SetActive(isNight);
+        }
     }
 
     IEnumerator DayCycle()
@@ -57,6 +103,11 @@ public class DayManager : MonoBehaviour
 
             yield return new WaitForSeconds(transitionDelay);
             yield return StartCoroutine(FadeToBlack());
+
+            // Reset timing and lighting AFTER fade
+            timer = 0f;
+            dayProgress = 0f;
+            UpdateLighting(0f); // Morning light
 
             currentDay++;
             UpdateDayDisplay();
@@ -117,11 +168,11 @@ public class DayManager : MonoBehaviour
         if (spawner != null)
         {
             spawner.customerLine.Clear();
-            spawner.ResetSpawner(); 
+            spawner.ResetSpawner();
             PlayerStack stack = FindObjectOfType<PlayerStack>();
             if (stack != null)
             {
-                stack.Invoke("MoveNextCustomerInLine", 0.5f); // Give a small delay if needed
+                stack.Invoke("MoveNextCustomerInLine", 0.5f);
             }
         }
     }
@@ -136,7 +187,12 @@ public class DayManager : MonoBehaviour
         CustomerMovement[] customers = FindObjectsOfType<CustomerMovement>();
         foreach (CustomerMovement customer in customers)
         {
-            customer.WalkOut(); // Make sure WalkOut sets hasPayed = true and targetPoint = exitPoint
+            customer.WalkOut();
         }
+    }
+
+    void AdvanceDay()
+    {
+        // Optional hook for immediate day change if not using coroutine timing
     }
 }
