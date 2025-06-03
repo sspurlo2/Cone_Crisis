@@ -182,6 +182,7 @@ public class Scooper : MonoBehaviour
         {
             Debug.Log("GiveCone() reached. Scooped is true.");
 
+.
             customer.MoveToRegister(); // Call the method to make the customer leave
             Debug.Log("Gave cone to customer!");
 
