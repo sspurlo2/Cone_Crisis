@@ -1120,16 +1120,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customerPrefab: {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
   spawnPoint: {fileID: 155249654}
-  targetPoint: {fileID: 735063669}
-  exitPoint: {fileID: 1110056892}
-  timeBetweenSpawns: 10
-  maxCustomers: 10
-  customerLine: []
   queuePositions:
   - {fileID: 735063669}
   - {fileID: 1656797509}
   - {fileID: 120179299}
   - {fileID: 1749413954}
+  timeBetweenSpawns: 10
+  maxCustomers: 10
+  customerLine: []
 --- !u!4 &155249654
 Transform:
   m_ObjectHideFlags: 0
@@ -8124,13 +8122,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1077078200}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 77.7706, y: 312.83038, z: -15.615723}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 74.476776, y: 306.1668, z: -19.00306}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 562818705}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1201414305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1080371961 stripped
 GameObject:
@@ -8461,11 +8459,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ad25d362b43cf4b57b3b3c4f2972cf0d, type: 3}
   - {fileID: 8300000, guid: 5f32b49efc1c34ce282e5a3312af8b9f, type: 3}
   - {fileID: 8300000, guid: 4aeb94403288b459b95416a5c93f3103, type: 3}
---- !u!4 &1110056892 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8557917149822909590, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
-  m_PrefabInstance: {fileID: 5480722900433014645}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1112635666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10142,7 +10135,6 @@ GameObject:
   - component: {fileID: 1264529139}
   - component: {fileID: 1264529143}
   - component: {fileID: 1264529144}
-  - component: {fileID: 1264529145}
   - component: {fileID: 1264529146}
   m_Layer: 0
   m_Name: CustomerTrigger
@@ -10268,18 +10260,6 @@ MonoBehaviour:
   receiptText: {fileID: 341330016}
   flavorOrder: []
   currentCustomer: {fileID: 0}
---- !u!114 &1264529145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1264529138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42b855778e5fe6f42b3e0a7796e57c99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1264529146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15529,6 +15509,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4845389839659541590, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
       insertIndex: 5
       addedObject: {fileID: 1749413954}
+    - targetCorrespondingSourceObject: {fileID: 4845389839659541590, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 1077078201}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ae646e599bd89d4580868064c75783c, type: 3}
 --- !u!1660057539 &9223372036854775807
@@ -15554,5 +15537,4 @@ SceneRoots:
   - {fileID: 171157018}
   - {fileID: 1254371325}
   - {fileID: 1917883742}
-  - {fileID: 1077078201}
   - {fileID: 193811661}
