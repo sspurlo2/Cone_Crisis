@@ -13,6 +13,7 @@ public class Scooper : MonoBehaviour
     public Material mangoMat;
     public Material strawberryMat;
     public Material vanillaMat;
+    public Material MintChocolateMat;
     private int scoopcount = 1;
     private int price = 0; // Base price for a cone
 
@@ -146,6 +147,11 @@ public class Scooper : MonoBehaviour
                 cleanedFlavor = "Mango";
             }
             else if (flavor.Contains("blueberry"))
+            {
+                scoopRenderer.material = blueberryMat;
+                cleanedFlavor = "Blueberry";
+            }
+            else if (flavor.Contains("mint"))
             {
                 scoopRenderer.material = blueberryMat;
                 cleanedFlavor = "Blueberry";
