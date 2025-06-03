@@ -13,11 +13,8 @@ public class PlayerStack : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            Debug.LogError("PlayerStack missing AudioSource component!");
-        }
     }
+
 
     public void AddFlavor(string flavor)
     {
@@ -80,8 +77,6 @@ public class PlayerStack : MonoBehaviour
             }
         }
     }
-
-
 
     void PlayRandomClip(AudioClip[] clipArray)
     {
