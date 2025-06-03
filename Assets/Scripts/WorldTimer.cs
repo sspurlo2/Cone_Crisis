@@ -59,6 +59,7 @@ public class WorldSpaceTimer : MonoBehaviour
                 CustomerMovement cm = customerToNotify.GetComponent<CustomerMovement>();
                 if (cm != null)
                 {
+                    FindObjectOfType<StarRatingDisplay>().IncreaseRating(-0.5f);
                     cm.WalkOut();
                 }
             }

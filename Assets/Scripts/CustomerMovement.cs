@@ -81,6 +81,7 @@ public class CustomerMovement : MonoBehaviour
         hasPayed = false;
     }
 
+
     public void WalkOut()
     {
         if (exitPoint == null)
@@ -91,8 +92,29 @@ public class CustomerMovement : MonoBehaviour
 
         Debug.Log($"Customer {gameObject.name} is walking out.");
         hasOrdered = false;
-        hasPayed = true;
+        hasPayed = false; // Important: Don't set to true since they're not paying
         targetPoint = exitPoint;
         isAtRegister = false;
+
+        // Remove from queue immediately
+        CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
+        if (spawner != null && spawner.customerLine.Contains(this))
+        {
+            spawner.customerLine.Remove(this);
+
+            // Move remaining customers forward
+            for (int i = 0; i < spawner.customerLine.Count; i++)
+            {
+                if (i < spawner.queuePositions.Count)
+                {
+                    spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
+                }
+            }
+        }
     }
+
+        public bool AtRegister()
+        {
+            return Vector3.Distance(transform.position, registerPoint.position) < 0.2f;
+        }
 }

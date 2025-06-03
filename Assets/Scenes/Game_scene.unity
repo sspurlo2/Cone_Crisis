@@ -2874,6 +2874,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 557321885}
   m_SourcePrefab: {fileID: 100100000, guid: 089852a97ecf8a943b3fa3cabf21ced0, type: 3}
+--- !u!1 &294667512 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 111596, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+  m_PrefabInstance: {fileID: 1908131024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &307872983 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8ffbbd0d367cf7e4284c3cc659f588e2, type: 3}
@@ -6603,6 +6608,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650610829}
   m_CullTransparentMesh: 1
+--- !u!1 &652151670 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 101354, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+  m_PrefabInstance: {fileID: 1908131024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &653930999
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6975,6 +6985,11 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &663965325 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 192248, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+  m_PrefabInstance: {fileID: 1908131024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &670279847
 GameObject:
   m_ObjectHideFlags: 0
@@ -11315,7 +11330,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalTime: 10
   ringSprite: {fileID: 1242970537}
+  countdownText: {fileID: 0}
   customerToNotify: {fileID: 0}
+  onTimerEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &1242970537
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11361,7 +11380,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0.09803921, b: 0.81641334, a: 1}
+  m_Color: {r: 0.990566, g: 0.08877712, b: 0.8062876, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -16152,6 +16171,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2331952, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b892c0939eccaf24496d95cec83a5626, type: 2}
+    - target: {fileID: 2348674, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b892c0939eccaf24496d95cec83a5626, type: 2}
+    - target: {fileID: 2354958, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b892c0939eccaf24496d95cec83a5626, type: 2}
+    - target: {fileID: 2368624, guid: 4073f41b7d930f94d9470df64ec12b53, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b892c0939eccaf24496d95cec83a5626, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16326,9 +16361,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc9866e43e6cb94aae3334c5fc896cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointerSeconds: {fileID: 0}
-  pointerMinutes: {fileID: 0}
-  pointerHours: {fileID: 0}
+  pointerSeconds: {fileID: 663965325}
+  pointerMinutes: {fileID: 652151670}
+  pointerHours: {fileID: 294667512}
 --- !u!1 &1917700729
 GameObject:
   m_ObjectHideFlags: 0
