@@ -2,8 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 public class DayManager : MonoBehaviour
 {
@@ -15,14 +13,13 @@ public class DayManager : MonoBehaviour
     public float fadeDuration = 1.5f;
     public Image FadeImage;
 
-    [Header("Lighting")]
     public Light directionalLight;
     public Gradient lightColorOverTime;
     public AnimationCurve lightIntensityOverTime;
-    public GameObject[] nightLights; // optional for street lamps, signs, etc.
+    public GameObject[] nightLights;
 
     [Range(0f, 1f)]
-    public float dayProgress = 0f; // 0 = morning, 1 = night
+    public float dayProgress = 0f;
 
     private float timer = 0f;
     private float dayLength;
@@ -39,7 +36,6 @@ public class DayManager : MonoBehaviour
     {
         timer += Time.deltaTime;
         dayProgress = timer / dayLength;
-
         UpdateLighting(dayProgress);
     }
 
@@ -50,15 +46,14 @@ public class DayManager : MonoBehaviour
             directionalLight.color = lightColorOverTime.Evaluate(progress);
             directionalLight.intensity = lightIntensityOverTime.Evaluate(progress);
             directionalLight.transform.rotation = Quaternion.Euler(
-                Mathf.Lerp(60f, -20f, progress), // Sun height
-                Mathf.Lerp(-30f, 30f, progress), // Sun arc
+                Mathf.Lerp(60f, -20f, progress),
+                Mathf.Lerp(-30f, 30f, progress),
                 0f
             );
         }
 
         RenderSettings.ambientIntensity = Mathf.Lerp(1f, 0.2f, progress);
 
-        // Optional: enable night lights
         bool isNight = progress > 0.7f;
         foreach (GameObject light in nightLights)
         {
@@ -83,7 +78,6 @@ public class DayManager : MonoBehaviour
 
             float moneyAtEnd = GameManager.Instance.playerMoney;
             float earnedToday = moneyAtEnd - moneyAtStart;
-
             float starRating = FindObjectOfType<StarRatingDisplay>().GetRating();
             float tipPercent = Mathf.Lerp(0.10f, 0.50f, starRating / 5f);
             float tips = earnedToday * tipPercent;
@@ -104,10 +98,10 @@ public class DayManager : MonoBehaviour
             yield return new WaitForSeconds(transitionDelay);
             yield return StartCoroutine(FadeToBlack());
 
-            // Reset timing and lighting AFTER fade
+            // Reset day
             timer = 0f;
             dayProgress = 0f;
-            UpdateLighting(0f); // Morning light
+            UpdateLighting(0f);
 
             currentDay++;
             UpdateDayDisplay();
@@ -115,6 +109,19 @@ public class DayManager : MonoBehaviour
             announcementCanvas.alpha = 0f;
 
             yield return StartCoroutine(FadeFromBlack());
+
+            CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
+            if (spawner != null)
+            {
+                spawner.SetDay(currentDay);
+                spawner.customerLine.Clear();
+                spawner.ResetSpawner();
+                PlayerStack stack = FindObjectOfType<PlayerStack>();
+                if (stack != null)
+                {
+                    stack.Invoke("MoveNextCustomerInLine", 0.5f);
+                }
+            }
         }
     }
 
@@ -162,19 +169,6 @@ public class DayManager : MonoBehaviour
 
         color.a = 0f;
         FadeImage.color = color;
-
-        // Clear and reset spawner for new day
-        CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
-        if (spawner != null)
-        {
-            spawner.customerLine.Clear();
-            spawner.ResetSpawner();
-            PlayerStack stack = FindObjectOfType<PlayerStack>();
-            if (stack != null)
-            {
-                stack.Invoke("MoveNextCustomerInLine", 0.5f);
-            }
-        }
     }
 
     void UpdateDayDisplay()
@@ -189,10 +183,5 @@ public class DayManager : MonoBehaviour
         {
             customer.WalkOut();
         }
-    }
-
-    void AdvanceDay()
-    {
-        // Optional hook for immediate day change if not using coroutine timing
     }
 }

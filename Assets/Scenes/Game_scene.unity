@@ -1365,7 +1365,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 265143632800348ebaab3984ced3b7f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
+  customerPrefabsPerDay:
+  - {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
+  - {fileID: 5929888503234776007, guid: 612a0ff104ee9c34f8c86454e1d21dbb, type: 3}
+  - {fileID: 5120210010202619319, guid: 253dcfa9771a5c1419efd0dbba280340, type: 3}
+  - {fileID: 7194279501657719070, guid: e2532c4953889474b90636f037ec2209, type: 3}
   spawnPoint: {fileID: 155249654}
   queuePositions:
   - {fileID: 735063669}
