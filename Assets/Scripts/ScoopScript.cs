@@ -22,7 +22,7 @@ public class Scooper : MonoBehaviour
 
     public float maxDistance = 3f;
     public AudioClip caChingClip;
-    public AudioClip scoopSound;     // ✅ New scoop sound clip
+    public AudioClip scoopSound;     // New scoop sound clip
     private AudioSource audioSource;
 
     void Start()
@@ -54,7 +54,7 @@ public class Scooper : MonoBehaviour
                             if (scoopcount > 2) price += 2;
                             scooped = true;
 
-                            // ✅ Play scoop sound
+                            // Play scoop sound
                             if (scoopSound != null && audioSource != null)
                                 audioSource.PlayOneShot(scoopSound);
 
@@ -232,7 +232,7 @@ public class Scooper : MonoBehaviour
                     Debug.LogWarning("MoneyDisplay not found — skipping money logic in tutorial.");
             }
 
-            // ✅ Play cash register sound
+            // Play cash register sound
             if (caChingClip != null && audioSource != null)
                 audioSource.PlayOneShot(caChingClip);
 
