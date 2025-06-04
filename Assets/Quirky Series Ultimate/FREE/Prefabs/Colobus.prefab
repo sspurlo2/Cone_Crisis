@@ -597,6 +597,7 @@ GameObject:
   - component: {fileID: -2598607568345246083}
   - component: {fileID: -8463292346205381469}
   - component: {fileID: -4301234930433496529}
+  - component: {fileID: 7505250734230846192}
   m_Layer: 7
   m_Name: Colobus
   m_TagString: Customer
@@ -742,6 +743,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7505250734230846192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6182162820492919152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05de8efbe094b49f8a75f2d45eb3fc5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerFlavors: []
+  currentOrder: {fileID: 0}
+  correctOrderClips: []
+  incorrectOrderClips: []
 --- !u!1 &7853299950699460719
 GameObject:
   m_ObjectHideFlags: 0
