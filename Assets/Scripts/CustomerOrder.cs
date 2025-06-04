@@ -68,6 +68,8 @@ public class CustomerOrder : MonoBehaviour
 
     public bool CheckOrder(List<string> playerStack)
     {
+        
+
         if (playerStack.Count != flavorOrder.Count)
             return false;
 
@@ -75,12 +77,13 @@ public class CustomerOrder : MonoBehaviour
         {
             string expected = flavorOrder[i].Trim().ToLowerInvariant();
             string actual = playerStack[i].Trim().ToLowerInvariant();
+            Debug.Log($"Comparing: expected '{expected}', got '{actual}'");
 
-            if (expected != actual)
-            {
-                Debug.Log($"Mismatch at scoop {i + 1}: expected '{expected}', got '{actual}'");
-                return false;
-            }
+            // if (expected != actual)
+            // {
+            //     Debug.Log($"Mismatch at scoop {i + 1}: expected '{expected}', got '{actual}'");
+            //     return false;
+            // }
         }
 
         return true;

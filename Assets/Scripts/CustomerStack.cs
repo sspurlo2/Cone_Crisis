@@ -5,11 +5,9 @@ public class PlayerStack : MonoBehaviour
 {
     public List<string> playerFlavors = new List<string>();
     public CustomerOrder currentOrder;
-
     [Header("Order Feedback Sounds")]
     public AudioClip[] correctOrderClips;
     public AudioClip[] incorrectOrderClips;
-
     private AudioSource audioSource;
 
     void Start()
@@ -51,8 +49,10 @@ public class PlayerStack : MonoBehaviour
         Debug.Log("currentOrder and customer are valid.");
 
         bool isCorrect = currentOrder.CheckOrder(playerFlavors);
+        Debug.Log("Order checked: " + isCorrect);
+        Debug.Log("Order checked: " + playerFlavors);
 
-        if (isCorrect)
+        if (!isCorrect)
         {
             Debug.Log("Order correct!");
             PlayRandomClip(correctOrderClips);
@@ -67,7 +67,7 @@ public class PlayerStack : MonoBehaviour
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(1f);
             MoveNextCustomerInLine();
         }
-        else
+        if(isCorrect)
         {
             Debug.Log("Incorrect order!");
             PlayRandomClip(incorrectOrderClips);

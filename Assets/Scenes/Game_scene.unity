@@ -16830,7 +16830,7 @@ MonoBehaviour:
   dayText: {fileID: 12025753}
   announcementText: {fileID: 1910152867}
   announcementCanvas: {fileID: 1910152866}
-  dayDuration: 30
+  dayDuration: 90
   transitionDelay: 1
   fadeDuration: 1.5
   FadeImage: {fileID: 1191220281}

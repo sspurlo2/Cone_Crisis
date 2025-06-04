@@ -94,8 +94,7 @@ public class Scooper : MonoBehaviour
                 {
                     RingUp(customer.gameObject);
                 }
-
-                if (customer != null)
+                else if (customer != null)
                 {
                     if (!scooped)
                     {
