@@ -29,7 +29,6 @@ public class PlayerStack : MonoBehaviour
     {
         currentOrder = order;
     }
-
     public bool TrySubmitOrder()
     {
         Debug.Log("TrySubmitOrder() called!");
@@ -50,41 +49,38 @@ public class PlayerStack : MonoBehaviour
 
         bool isCorrect = currentOrder.CheckOrder(playerFlavors);
         Debug.Log("Order checked: " + isCorrect);
-        Debug.Log("Order checked: " + playerFlavors);
+        Debug.Log("Expected: " + string.Join(", ", currentOrder.flavorOrder));
+        Debug.Log("Player:   " + string.Join(", ", playerFlavors));
 
-        if (!isCorrect)
+        // Hide the receipt regardless
+        if (currentOrder.receiptCube != null)
+            currentOrder.receiptCube.SetActive(false);
+
+        if (isCorrect)
         {
             Debug.Log("Order correct!");
             PlayRandomClip(correctOrderClips);
 
-            playerFlavors.Clear();
-
-            if (currentOrder.receiptCube != null)
-                currentOrder.receiptCube.SetActive(false);
-
-            currentOrder.currentCustomer.MoveToRegister();
+            currentOrder.currentCustomer.MoveToRegister(); // Correct = pay + leave
 
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(1f);
-            MoveNextCustomerInLine();
         }
-        if(isCorrect)
+        else
         {
             Debug.Log("Incorrect order!");
             PlayRandomClip(incorrectOrderClips);
 
-            playerFlavors.Clear();
-
-            if (currentOrder.receiptCube != null)
-                currentOrder.receiptCube.SetActive(false);
-
-            currentOrder.currentCustomer.Pay();
+            currentOrder.currentCustomer.WalkOut(); // Wrong = walk out (no pay)
 
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(-0.5f);
-            MoveNextCustomerInLine();
         }
+
+        playerFlavors.Clear();
+        MoveNextCustomerInLine();
 
         return isCorrect;
     }
+
 
     void PlayRandomClip(AudioClip[] clipArray)
     {

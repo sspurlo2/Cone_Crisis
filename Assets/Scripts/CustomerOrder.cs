@@ -17,32 +17,34 @@ public class CustomerOrder : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"[ORDER ZONE] Trigger entered by: {other.name}");
+
         if (other.CompareTag("Customer"))
         {
-            Debug.Log("Customer entered order zone");
+            Debug.Log("Customer entered order zone — Generating order");
 
             currentCustomer = other.GetComponent<CustomerMovement>();
-            if (currentCustomer == null) return;
+            if (currentCustomer == null)
+            {
+                Debug.LogWarning("Could not find CustomerMovement on " + other.name);
+                return;
+            }
 
-            receiptCube.SetActive(true);
+            receiptCube?.SetActive(true);
             GenerateOrder();
             DisplayOrder();
 
-            // Register this order with the player stack (optional)
+            Debug.Log("Generated order: " + string.Join(", ", flavorOrder));
+
             PlayerStack playerStack = FindFirstObjectByType<PlayerStack>();
             if (playerStack != null)
             {
                 playerStack.currentOrder = this;
-            }
-
-            // Start the countdown timer for this customer
-            WorldSpaceTimer timer = FindObjectOfType<WorldSpaceTimer>();
-            if (timer != null)
-            {
-                timer.StartTimerForCustomer(other.gameObject); // assign & start
+                Debug.Log(" PlayerStack.currentOrder set");
             }
         }
     }
+
 
     void GenerateOrder()
     {
@@ -55,7 +57,10 @@ public class CustomerOrder : MonoBehaviour
             string randomFlavor = flavors[Random.Range(0, flavors.Length)];
             flavorOrder.Add(randomFlavor);
         }
+
+        Debug.Log("Generated order: " + string.Join(", ", flavorOrder));
     }
+
 
     void DisplayOrder()
     {
@@ -65,29 +70,35 @@ public class CustomerOrder : MonoBehaviour
             receiptText.text += $"Scoop {i + 1}: {flavorOrder[i]}\n";
         }
     }
-
     public bool CheckOrder(List<string> playerStack)
     {
-        
+        Debug.Log(" Checking Order...");
+        Debug.Log("Expected: " + (flavorOrder.Count > 0 ? string.Join(", ", flavorOrder) : "EMPTY"));
+        Debug.Log("Player:   " + (playerStack.Count > 0 ? string.Join(", ", playerStack) : "EMPTY"));
 
         if (playerStack.Count != flavorOrder.Count)
+        {
+            Debug.Log(" Count mismatch.");
             return false;
+        }
 
         for (int i = 0; i < flavorOrder.Count; i++)
         {
             string expected = flavorOrder[i].Trim().ToLowerInvariant();
             string actual = playerStack[i].Trim().ToLowerInvariant();
-            Debug.Log($"Comparing: expected '{expected}', got '{actual}'");
+            Debug.Log($"Comparing scoop {i + 1}: expected '{expected}', got '{actual}'");
 
-            // if (expected != actual)
-            // {
-            //     Debug.Log($"Mismatch at scoop {i + 1}: expected '{expected}', got '{actual}'");
-            //     return false;
-            // }
+            if (expected != actual)
+            {
+                Debug.Log("Mismatch found!");
+                return false;
+            }
         }
 
+        Debug.Log("All scoops match!");
         return true;
     }
+
 
 
     void Awake()

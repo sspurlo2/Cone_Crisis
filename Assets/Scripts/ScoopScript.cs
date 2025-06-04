@@ -22,7 +22,7 @@ public class Scooper : MonoBehaviour
 
     public float maxDistance = 3f;
     public AudioClip caChingClip;
-    public AudioClip scoopSound;     // New scoop sound clip
+    public AudioClip scoopSound;
     private AudioSource audioSource;
 
     void Start()
@@ -45,29 +45,24 @@ public class Scooper : MonoBehaviour
                 if (conePickedUp)
                 {
                     IceCreamSupply supply = hit.collider.GetComponentInParent<IceCreamSupply>();
-
-                    if (supply != null)
+                    if (supply != null && supply.UseScoop())
                     {
-                        if (supply.UseScoop())
-                        {
-                            SpawnCone(hit.collider.gameObject);
-                            if (scoopcount > 2) price += 2;
-                            scooped = true;
+                        SpawnCone(hit.collider.gameObject);
+                        if (scoopcount > 2) price += 2;
+                        scooped = true;
 
-                            // Play scoop sound
-                            if (scoopSound != null && audioSource != null)
-                                audioSource.PlayOneShot(scoopSound);
+                        if (scoopSound != null && audioSource != null)
+                            audioSource.PlayOneShot(scoopSound);
 
-                            if (TutorialManager.Instance != null && TutorialManager.Instance.step == 2)
-                            {
-                                Debug.Log("Advancing tutorial from step 2 to 3");
-                                TutorialManager.Instance.AdvanceStep();
-                            }
-                        }
-                        else
+                        if (TutorialManager.Instance != null && TutorialManager.Instance.step == 2)
                         {
-                            Debug.Log("No scoops left! Restock required.");
+                            Debug.Log("Advancing tutorial from step 2 to 3");
+                            TutorialManager.Instance.AdvanceStep();
                         }
+                    }
+                    else
+                    {
+                        Debug.Log("No scoops left! Restock required.");
                     }
                 }
                 else
@@ -135,12 +130,30 @@ public class Scooper : MonoBehaviour
         {
             string cleanedFlavor = "";
 
-            if (flavor.Contains("vanilla")) { scoopRenderer.material = vanillaMat; cleanedFlavor = "Vanilla"; }
-            else if (flavor.Contains("chocolate")) { scoopRenderer.material = chocolateMat; cleanedFlavor = "Chocolate"; }
-            else if (flavor.Contains("strawberry")) { scoopRenderer.material = strawberryMat; cleanedFlavor = "Strawberry"; }
-            else if (flavor.Contains("mango")) { scoopRenderer.material = mangoMat; cleanedFlavor = "Mango"; }
-            else if (flavor.Contains("blueberry")) { scoopRenderer.material = blueberryMat; cleanedFlavor = "Blueberry"; }
-            else if (flavor.Contains("mint")) { scoopRenderer.material = blueberryMat; cleanedFlavor = "Blueberry"; }
+            if (flavor.Contains("vanilla")) {
+                scoopRenderer.material = vanillaMat;
+                cleanedFlavor = "Vanilla";
+            }
+            else if (flavor.Contains("chocolate") && !flavor.Contains("mint")) {
+                scoopRenderer.material = chocolateMat;
+                cleanedFlavor = "Chocolate";
+            }
+            else if (flavor.Contains("strawberry")) {
+                scoopRenderer.material = strawberryMat;
+                cleanedFlavor = "Strawberry";
+            }
+            else if (flavor.Contains("mango")) {
+                scoopRenderer.material = mangoMat;
+                cleanedFlavor = "Mango";
+            }
+            else if (flavor.Contains("blueberry")) {
+                scoopRenderer.material = blueberryMat;
+                cleanedFlavor = "Blueberry";
+            }
+            else if (flavor.Contains("mint")) {
+                scoopRenderer.material = MintChocolateMat;
+                cleanedFlavor = "Mint";
+            }
 
             if (!string.IsNullOrEmpty(cleanedFlavor))
             {
@@ -150,6 +163,10 @@ public class Scooper : MonoBehaviour
                     player.AddFlavor(cleanedFlavor);
                     Debug.Log($"Added flavor to player stack: {cleanedFlavor}");
                 }
+            }
+            else
+            {
+                Debug.LogWarning("No matching flavor found in tub name: " + flavor);
             }
         }
     }
@@ -185,13 +202,20 @@ public class Scooper : MonoBehaviour
             }
 
             CustomerSpawner spawner = FindFirstObjectByType<CustomerSpawner>();
-            if (spawner != null)
+            if (spawner != null && spawner.customerLine.Count > 0)
             {
                 spawner.customerLine.RemoveAt(0);
                 for (int i = 0; i < spawner.customerLine.Count; i++)
                 {
-                    spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
+                    if (i < spawner.queuePositions.Count)
+                    {
+                        spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
+                    }
                 }
+            }
+            else
+            {
+                Debug.LogWarning("Tried to remove customer, but the line was empty or spawner was missing.");
             }
 
             foreach (Transform child in playerCamObj.transform)
@@ -205,7 +229,7 @@ public class Scooper : MonoBehaviour
             }
 
             PlayerStack stack = FindFirstObjectByType<PlayerStack>();
-            CustomerOrder order = customerObj.GetComponentInChildren<CustomerOrder>();
+            CustomerOrder order = customerObj.GetComponent<CustomerOrder>();
             Debug.Log("Checking stack and order...");
             Debug.Log("stack is " + (stack == null ? "null" : "FOUND"));
             Debug.Log("order is " + (order == null ? "null" : "FOUND"));
@@ -230,8 +254,6 @@ public class Scooper : MonoBehaviour
         }
     }
 
-
-
     public void RingUp(GameObject customerObj)
     {
         CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
@@ -248,7 +270,6 @@ public class Scooper : MonoBehaviour
                     Debug.LogWarning("MoneyDisplay not found — skipping money logic in tutorial.");
             }
 
-            // Play cash register sound
             if (caChingClip != null && audioSource != null)
                 audioSource.PlayOneShot(caChingClip);
 
@@ -269,5 +290,10 @@ public class Scooper : MonoBehaviour
         scooped = false;
         conePickedUp = false;
         scoopcount = 1;
+        PlayerStack stack = FindFirstObjectByType<PlayerStack>();
+        if (stack != null)
+        {
+            stack.playerFlavors.Clear();
+        }
     }
 }

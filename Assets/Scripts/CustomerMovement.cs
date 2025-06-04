@@ -39,7 +39,11 @@ public class CustomerMovement : MonoBehaviour
             MoveTowardsTarget(exitPoint);
             if (Vector3.Distance(transform.position, exitPoint.position) < 0.2f)
             {
-                Destroy(gameObject); // Customer leaves
+                Debug.Log($"{gameObject.name} reached exit. Leaving.");
+                hasPayed = false;
+                hasOrdered = false;
+                isAtRegister = false;
+                Destroy(gameObject);
             }
         }
         else if (hasOrdered && registerPoint != null)
@@ -66,12 +70,16 @@ public class CustomerMovement : MonoBehaviour
 
     public void MoveToRegister()
     {
+        Debug.Log($"{gameObject.name} is heading to register.");
         hasOrdered = true;
+        hasPayed = false;  // Prevents accidental exit
     }
 
     public void Pay()
     {
+        Debug.Log($"{gameObject.name} is paying and heading out.");
         hasPayed = true;
+        hasOrdered = false; // Prevents returning to register
     }
 
     public void MoveToFront(Transform target)
@@ -79,8 +87,8 @@ public class CustomerMovement : MonoBehaviour
         targetPoint = target;
         hasOrdered = false;
         hasPayed = false;
+        isAtRegister = false;
     }
-
 
     public void WalkOut()
     {
@@ -92,17 +100,15 @@ public class CustomerMovement : MonoBehaviour
 
         Debug.Log($"Customer {gameObject.name} is walking out.");
         hasOrdered = false;
-        hasPayed = false; // Important: Don't set to true since they're not paying
+        hasPayed = false;
         targetPoint = exitPoint;
         isAtRegister = false;
 
-        // Remove from queue immediately
         CustomerSpawner spawner = FindObjectOfType<CustomerSpawner>();
         if (spawner != null && spawner.customerLine.Contains(this))
         {
             spawner.customerLine.Remove(this);
 
-            // Move remaining customers forward
             for (int i = 0; i < spawner.customerLine.Count; i++)
             {
                 if (i < spawner.queuePositions.Count)
@@ -113,8 +119,8 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-        public bool AtRegister()
-        {
-            return Vector3.Distance(transform.position, registerPoint.position) < 0.2f;
-        }
+    public bool AtRegister()
+    {
+        return Vector3.Distance(transform.position, registerPoint.position) < 0.2f;
+    }
 }
