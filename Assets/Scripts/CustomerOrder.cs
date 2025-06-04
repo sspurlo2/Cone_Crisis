@@ -68,13 +68,36 @@ public class CustomerOrder : MonoBehaviour
 
     public bool CheckOrder(List<string> playerStack)
     {
-        if (playerStack.Count != flavorOrder.Count) return false;
+        if (playerStack.Count != flavorOrder.Count)
+            return false;
 
         for (int i = 0; i < flavorOrder.Count; i++)
         {
-            if (playerStack[i] != flavorOrder[i]) return false;
+            string expected = flavorOrder[i].Trim().ToLowerInvariant();
+            string actual = playerStack[i].Trim().ToLowerInvariant();
+
+            if (expected != actual)
+            {
+                Debug.Log($"Mismatch at scoop {i + 1}: expected '{expected}', got '{actual}'");
+                return false;
+            }
         }
 
         return true;
     }
+
+
+    void Awake()
+{
+    // Auto-assign currentCustomer if not set manually
+    if (currentCustomer == null)
+    {
+        currentCustomer = GetComponentInParent<CustomerMovement>();
+        if (currentCustomer == null)
+            Debug.LogWarning("CustomerOrder could not auto-assign currentCustomer!");
+        else
+            Debug.Log(" CustomerOrder auto-assigned currentCustomer: " + currentCustomer.name);
+    }
 }
+}
+

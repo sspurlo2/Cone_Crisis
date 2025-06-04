@@ -206,15 +206,32 @@ public class Scooper : MonoBehaviour
             }
 
             PlayerStack stack = FindFirstObjectByType<PlayerStack>();
-            if (stack != null)
+            CustomerOrder order = customerObj.GetComponentInChildren<CustomerOrder>();
+            Debug.Log("Checking stack and order...");
+            Debug.Log("stack is " + (stack == null ? "null" : "FOUND"));
+            Debug.Log("order is " + (order == null ? "null" : "FOUND"));
+
+            if (stack != null && order != null)
             {
+                stack.SetCurrentOrder(order);
+                Debug.Log("Set current order on PlayerStack.");
+                Debug.Log("Calling TrySubmitOrder from Scooper!");
                 stack.TrySubmitOrder();
+            }
+            else
+            {
+                if (stack == null)
+                    Debug.LogWarning(" Could not find PlayerStack.");
+                if (order == null)
+                    Debug.LogWarning(" Could not find CustomerOrder in children of customerObj.");
             }
 
             if (TutorialManager.Instance != null && TutorialManager.Instance.step == 3)
                 TutorialManager.Instance.AdvanceStep();
         }
     }
+
+
 
     public void RingUp(GameObject customerObj)
     {

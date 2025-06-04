@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class PlayerStack : MonoBehaviour
 {
-    public List<string> playerFlavors = new List<string>(); // Flavors on the current cone
-    public CustomerOrder currentOrder;                      // Reference to current customer order
+    public List<string> playerFlavors = new List<string>();
+    public CustomerOrder currentOrder;
 
     [Header("Order Feedback Sounds")]
     public AudioClip[] correctOrderClips;
@@ -27,13 +27,28 @@ public class PlayerStack : MonoBehaviour
         playerFlavors.Add(flavor);
     }
 
+    public void SetCurrentOrder(CustomerOrder order)
+    {
+        currentOrder = order;
+    }
+
     public bool TrySubmitOrder()
     {
-        if (currentOrder == null || currentOrder.currentCustomer == null)
+        Debug.Log("TrySubmitOrder() called!");
+
+        if (currentOrder == null)
         {
-            Debug.LogWarning("No order or customer to check.");
+            Debug.LogWarning("currentOrder is null.");
             return false;
         }
+
+        if (currentOrder.currentCustomer == null)
+        {
+            Debug.LogWarning("currentOrder.currentCustomer is null.");
+            return false;
+        }
+
+        Debug.Log("currentOrder and customer are valid.");
 
         bool isCorrect = currentOrder.CheckOrder(playerFlavors);
 
@@ -43,7 +58,10 @@ public class PlayerStack : MonoBehaviour
             PlayRandomClip(correctOrderClips);
 
             playerFlavors.Clear();
-            currentOrder.receiptCube.SetActive(false);
+
+            if (currentOrder.receiptCube != null)
+                currentOrder.receiptCube.SetActive(false);
+
             currentOrder.currentCustomer.MoveToRegister();
 
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(1f);
@@ -55,7 +73,10 @@ public class PlayerStack : MonoBehaviour
             PlayRandomClip(incorrectOrderClips);
 
             playerFlavors.Clear();
-            currentOrder.receiptCube.SetActive(false);
+
+            if (currentOrder.receiptCube != null)
+                currentOrder.receiptCube.SetActive(false);
+
             currentOrder.currentCustomer.Pay();
 
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(-0.5f);
@@ -70,10 +91,14 @@ public class PlayerStack : MonoBehaviour
         if (clipArray.Length > 0 && audioSource != null)
         {
             AudioClip clip = clipArray[Random.Range(0, clipArray.Length)];
+            Debug.Log("Playing clip: " + clip.name);
             audioSource.PlayOneShot(clip);
         }
+        else
+        {
+            Debug.LogWarning("Clip array empty or AudioSource missing.");
+        }
     }
-
 
     public void MoveNextCustomerInLine()
     {

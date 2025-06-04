@@ -226,6 +226,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9312126e574e97047b72657b5431e12a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2175373271024061549}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9312126e574e97047b72657b5431e12a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7158456622673549138}
   m_SourcePrefab: {fileID: 100100000, guid: 9312126e574e97047b72657b5431e12a, type: 3}
 --- !u!1 &6490136728237138907 stripped
 GameObject:
@@ -444,3 +447,19 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ad25d362b43cf4b57b3b3c4f2972cf0d, type: 3}
   - {fileID: 8300000, guid: 5f32b49efc1c34ce282e5a3312af8b9f, type: 3}
   - {fileID: 8300000, guid: 4aeb94403288b459b95416a5c93f3103, type: 3}
+--- !u!114 &-7158456622673549138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490136728237138907}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d681566c6dcb7412490d930c3a7234a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receiptCube: {fileID: 0}
+  receiptText: {fileID: 0}
+  flavorOrder: []
+  currentCustomer: {fileID: 0}
