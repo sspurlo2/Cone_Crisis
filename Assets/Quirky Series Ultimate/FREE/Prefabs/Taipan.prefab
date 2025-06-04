@@ -493,7 +493,7 @@ GameObject:
   - component: {fileID: 1013985726784080248}
   - component: {fileID: -925531064218255204}
   - component: {fileID: 1332724619400681454}
-  - component: {fileID: -5211954114577836395}
+  - component: {fileID: 727618837917946278}
   m_Layer: 7
   m_Name: Taipan
   m_TagString: Customer
@@ -511,7 +511,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8306261897508883890}
@@ -589,7 +589,7 @@ MonoBehaviour:
   targetPoint: {fileID: 0}
   exitPoint: {fileID: 0}
   registerPoint: {fileID: 0}
-  moveSpeed: 2
+  moveSpeed: 4
   isAtRegister: 0
 --- !u!65 &-925531064218255204
 BoxCollider:
@@ -639,7 +639,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-5211954114577836395
+--- !u!114 &727618837917946278
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -653,8 +653,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerFlavors: []
   currentOrder: {fileID: 0}
-  correctOrderClips: []
-  incorrectOrderClips: []
+  correctOrderClips:
+  - {fileID: 8300000, guid: 5a33677c51d884657885c82e5b4f030f, type: 3}
+  - {fileID: 8300000, guid: ab5f814d86c2b4ca4b7a6527f760db54, type: 3}
+  - {fileID: 8300000, guid: fdc6fc027241d40ff9bbb809a06ca820, type: 3}
+  - {fileID: 8300000, guid: 24df01ccc307c4ecd865b9c7c37fad5f, type: 3}
+  - {fileID: 8300000, guid: 4c9f920c948914825a641a1945e656f3, type: 3}
+  - {fileID: 8300000, guid: 0391315e231e1497e8d9879437bce628, type: 3}
+  incorrectOrderClips:
+  - {fileID: 8300000, guid: e2db0513dea424d9eaaf19138a67df79, type: 3}
+  - {fileID: 8300000, guid: 13acee4cf19b643ee8ea4add27757ff2, type: 3}
+  - {fileID: 8300000, guid: 8783177c86ffa4337819dac73f62a516, type: 3}
+  - {fileID: 8300000, guid: ad25d362b43cf4b57b3b3c4f2972cf0d, type: 3}
+  - {fileID: 8300000, guid: 5f32b49efc1c34ce282e5a3312af8b9f, type: 3}
+  - {fileID: 8300000, guid: 4aeb94403288b459b95416a5c93f3103, type: 3}
 --- !u!1 &5062559287153234616
 GameObject:
   m_ObjectHideFlags: 0

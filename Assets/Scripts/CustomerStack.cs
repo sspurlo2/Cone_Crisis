@@ -4,17 +4,23 @@ using System.Collections.Generic;
 public class PlayerStack : MonoBehaviour
 {
     public List<string> playerFlavors = new List<string>(); // Flavors on the current cone
-    public CustomerOrder currentOrder;                      // Assigned when customer triggers order zone
-    public AudioClip[] correctOrderClips;                   // Variants of success SFX
-    public AudioClip[] incorrectOrderClips;                 // Variants of failure SFX
+    public CustomerOrder currentOrder;                      // Reference to current customer order
+
+    [Header("Order Feedback Sounds")]
+    public AudioClip[] correctOrderClips;
+    public AudioClip[] incorrectOrderClips;
 
     private AudioSource audioSource;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-    }
 
+        if (audioSource == null)
+        {
+            Debug.LogError("Missing AudioSource on PlayerStack object!");
+        }
+    }
 
     public void AddFlavor(string flavor)
     {
@@ -25,7 +31,7 @@ public class PlayerStack : MonoBehaviour
     {
         if (currentOrder == null || currentOrder.currentCustomer == null)
         {
-            Debug.LogWarning("No current order or customer to check against.");
+            Debug.LogWarning("No order or customer to check.");
             return false;
         }
 
@@ -38,9 +44,9 @@ public class PlayerStack : MonoBehaviour
 
             playerFlavors.Clear();
             currentOrder.receiptCube.SetActive(false);
-            currentOrder.currentCustomer.MoveToRegister(); // Customer goes to pay
-            FindObjectOfType<StarRatingDisplay>().IncreaseRating(1f);
+            currentOrder.currentCustomer.MoveToRegister();
 
+            FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(1f);
             MoveNextCustomerInLine();
         }
         else
@@ -48,16 +54,26 @@ public class PlayerStack : MonoBehaviour
             Debug.Log("Incorrect order!");
             PlayRandomClip(incorrectOrderClips);
 
-            playerFlavors.Clear(); // Optional: You may or may not clear stack on failure
+            playerFlavors.Clear();
             currentOrder.receiptCube.SetActive(false);
-            currentOrder.currentCustomer.Pay(); // Customer just walks out
-            FindObjectOfType<StarRatingDisplay>().IncreaseRating(-.5f);
+            currentOrder.currentCustomer.Pay();
 
+            FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(-0.5f);
             MoveNextCustomerInLine();
         }
 
         return isCorrect;
     }
+
+    void PlayRandomClip(AudioClip[] clipArray)
+    {
+        if (clipArray.Length > 0 && audioSource != null)
+        {
+            AudioClip clip = clipArray[Random.Range(0, clipArray.Length)];
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
 
     public void MoveNextCustomerInLine()
     {
@@ -75,15 +91,6 @@ public class PlayerStack : MonoBehaviour
                     spawner.customerLine[i].MoveToFront(spawner.queuePositions[i]);
                 }
             }
-        }
-    }
-
-    void PlayRandomClip(AudioClip[] clipArray)
-    {
-        if (clipArray.Length > 0 && audioSource != null)
-        {
-            AudioClip clip = clipArray[Random.Range(0, clipArray.Length)];
-            audioSource.PlayOneShot(clip);
         }
     }
 }
