@@ -27,8 +27,12 @@ public class PlayerStack : MonoBehaviour
 
     public void SetCurrentOrder(CustomerOrder order)
     {
+        Debug.Log("SetCurrentOrder called on PlayerStack: " + this.gameObject.name + 
+                ", order: " + (order != null ? order.name : "null") + 
+                ", stack instance id: " + this.GetInstanceID());
         currentOrder = order;
     }
+
     public bool TrySubmitOrder()
     {
         Debug.Log("TrySubmitOrder() called!");
@@ -74,11 +78,14 @@ public class PlayerStack : MonoBehaviour
 
             FindObjectOfType<StarRatingDisplay>()?.IncreaseRating(-0.5f);
         }
-
         playerFlavors.Clear();
         MoveNextCustomerInLine();
 
+        // Reset currentOrder after handling this customer!
+        currentOrder = null;
+
         return isCorrect;
+
     }
 
 

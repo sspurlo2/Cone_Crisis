@@ -187,6 +187,7 @@ public class Scooper : MonoBehaviour
     public void GiveCone(GameObject customerObj)
     {
         CustomerMovement customer = customerObj.GetComponent<CustomerMovement>();
+        
 
         if (scooped)
         {
@@ -223,31 +224,42 @@ public class Scooper : MonoBehaviour
                 if (child.CompareTag("Cone"))
                 {
                     Destroy(child.gameObject);
-                    ResetScooped();
                     break;
                 }
             }
-
             PlayerStack stack = FindFirstObjectByType<PlayerStack>();
-            CustomerOrder order = customerObj.GetComponent<CustomerOrder>();
-            Debug.Log("Checking stack and order...");
-            Debug.Log("stack is " + (stack == null ? "null" : "FOUND"));
-            Debug.Log("order is " + (order == null ? "null" : "FOUND"));
 
-            if (stack != null && order != null)
+            Debug.Log("Attempting to serve: PlayerStack " + (stack != null ? stack.gameObject.name : "null") + 
+          ", instance id: " + (stack != null ? stack.GetInstanceID().ToString() : "null") +
+          ", currentOrder: " + (stack != null && stack.currentOrder != null ? stack.currentOrder.name : "null"));
+
+
+            // Now check the order
+            if (stack != null && stack.currentOrder != null && stack.currentOrder.currentCustomer != null)
             {
-                stack.SetCurrentOrder(order);
-                Debug.Log("Set current order on PlayerStack.");
-                Debug.Log("Calling TrySubmitOrder from Scooper!");
                 stack.TrySubmitOrder();
             }
             else
             {
-                if (stack == null)
-                    Debug.LogWarning(" Could not find PlayerStack.");
-                if (order == null)
-                    Debug.LogWarning(" Could not find CustomerOrder in children of customerObj.");
+                 Debug.LogWarning(
+                    "Can't give cone: " +
+                    (stack == null ? "PlayerStack is null. " : "") +
+                    (stack != null && stack.currentOrder == null ? "currentOrder is null. " : "") +
+                    (stack != null && stack.currentOrder != null && stack.currentOrder.currentCustomer == null ? "currentCustomer is null. " : "poop")
+                );
             }
+
+
+
+
+            // Finally, reset for next time
+            ResetScooped();
+
+            
+            // if (order == null)
+            // {
+            //     Debug.LogWarning("Could not find CustomerOrder in children of customerObj.");
+            // }
 
             if (TutorialManager.Instance != null && TutorialManager.Instance.step == 3)
                 TutorialManager.Instance.AdvanceStep();

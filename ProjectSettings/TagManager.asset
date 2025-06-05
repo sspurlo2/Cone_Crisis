@@ -7,17 +7,18 @@ TagManager:
   - StrawberryIceCream
   - Customer
   - Cone
+  - CustomerTrigger
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - cream
   - Water
   - UI
   - UI_Interaction
   - customerLayer
   - trash
-  - cream
+  - 
   - whatIsGrounded
   - player
   - conePickUp

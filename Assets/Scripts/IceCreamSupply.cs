@@ -7,7 +7,9 @@ public class IceCreamSupply : MonoBehaviour
     // Remove the moneyDisplay reference, since you're handling money through GameManager
     // public MoneyDisplay moneyDisplay; // Remove this line
     public bool IsEmpty => currentScoops <= 0; // True when out of scoops
-    public int restockCost = 50;
+    public int restockCost = 25;
+    // sam i changed this to 25, because i was getting charged 100
+    // so ig it calls this charge twice, now its truly 50
 
 
     void Start() => currentScoops = maxScoops;
