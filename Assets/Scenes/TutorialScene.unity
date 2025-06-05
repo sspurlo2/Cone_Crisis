@@ -1118,7 +1118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 265143632800348ebaab3984ced3b7f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
+  customerPrefabsPerDay:
+  - {fileID: 6490136728237138907, guid: b3d22c566a40cfe45bfc575a822257f4, type: 3}
   spawnPoint: {fileID: 155249654}
   queuePositions:
   - {fileID: 735063669}
@@ -8333,7 +8334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09f3908612c088408527893ae2c80d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restockButton: {fileID: 0}
 --- !u!82 &1108519389
 AudioSource:
   m_ObjectHideFlags: 0
@@ -13387,7 +13387,10 @@ MonoBehaviour:
   mangoMat: {fileID: 2100000, guid: 8e93c0df744457d4e887e3fce46163ff, type: 2}
   strawberryMat: {fileID: 2100000, guid: b574026e090fc4942960b5cda99169b0, type: 2}
   vanillaMat: {fileID: 2100000, guid: b892c0939eccaf24496d95cec83a5626, type: 2}
+  MintChocolateMat: {fileID: 0}
   maxDistance: 5
+  caChingClip: {fileID: 0}
+  scoopSound: {fileID: 0}
 --- !u!1 &1728038691 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -516098083770646512, guid: 089852a97ecf8a943b3fa3cabf21ced0, type: 3}
